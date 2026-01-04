@@ -1,0 +1,24 @@
+# Python cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+venv/*
+
+# Environment / config files with secrets
+.env
+config.py
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Database files (if local)
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db

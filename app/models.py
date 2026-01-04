@@ -1,4 +1,4 @@
-from . import db
+from app.extensions import db
 
 class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
