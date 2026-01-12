@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
 from sqlalchemy import func
 from datetime import date
-from app.models import Property, Unit, Building, Address
+from app.models import Property, Unit, Building, Address, BuildingType, Lease, Payments, Charges, Application
 from app.extensions import db
 from sqlalchemy import func, and_, distinct, text
 from sqlalchemy.orm import aliased
@@ -68,32 +68,121 @@ def properties():
         page_title="Properties"
     )
 
-# @main.route('/properties/<int:property_id>')
-# def property_detail(property_id):
-#     property_obj = Property.query.get(property_id)
 
-#     today = date.today()
-    
- 
-#     occupied_count = (
-#         db.session.query(Unit)
-#         .join(Lease)
-#         .filter(
-#             Unit.property_id == property_id,
-#             Lease.start_date <= today,
-#             Lease.end_date >= today,
-#             Lease.cease_date == None  # optional
-#         )
-#         .count()
-#     )
 
-#     if not property_obj:
-#         return "Property not found", 404
+@main.route('/properties/<int:property_id>')
+def property_detail(property_id):
+    property_obj = Property.query.get(property_id)
+    buildings_obj = property_obj.buildings
+
+    # Unit Occupancy
+    unit_occupied_count = (
+        db.session.query(
+            distinct(Unit.unit_id))
+            .join(Lease)
+            .join(Building)
+            .filter(Building.property_id == property_id)
+            .filter(Lease.start_date <= date.today())
+            .filter(Lease.end_date >= date.today())
+            .filter(Lease.move_out_date.is_(None))
+            .count()
+        )
     
-#     return render_template('property_details.html',
-#                            prop=property_obj,
-#                            page_title=property_obj.name,
-#                            occupied_units=occupied_count)
+    # Total Units
+    total_units = (
+        db.session.query(
+            Unit.unit_id)
+        .join(Building)
+        .filter(Building.property_id == property_id)
+        .count()
+    )
+
+    # Rent Collected This Month
+    today = date.today()
+    first_day = today.replace(day=1)
+    if today.month == 12:
+        next_month = today.replace(year=today.year+1, month=1, day=1)
+    else:
+        next_month = today.replace(month=today.month+1, day=1)
+    
+    rent_collected = (
+        db.session.query(
+            func.coalesce(func.sum(Application.amount_applied), 0)
+        ).join(Charges, Application.charge_id == Charges.charge_id)
+        .filter(
+            Charges.charge_type == "rent",
+            Charges.period_start < next_month,
+            Charges.period_end >= first_day
+        )
+        .scalar()
+    )
+
+    # Rent Owed This Month
+    rent_due = (
+        db.session.query(
+            func.coalesce(func.sum(Charges.amount), 0)
+        ).filter(
+            Charges.charge_type == "rent",
+            Charges.period_start < next_month,
+            Charges.period_end >= first_day
+        )
+        .scalar()
+    )
+
+    # Outstanding Balance
+    # Subquery: total applied per charge 
+
+    applied_subq = (
+        db.session.query(
+            Application.charge_id.label("charge_id"),
+            func.sum(Application.amount_applied).label("total_applied")
+        )
+        .group_by(Application.charge_id)
+        .subquery()
+    )
+
+    total_outstanding = (
+        db.session.query(
+            func.coalesce(
+                func.sum(
+                    Charges.amount - func.coalesce(applied_subq.c.total_applied, 0)
+                ),
+                0
+            )
+        )
+        .outerjoin(
+            applied_subq,
+            applied_subq.c.charge_id == Charges.charge_id
+        )
+        .filter(
+            Charges.status.notin_(["paid", "void"]),
+            Charges.due_date <= today
+        )
+        .scalar()
+    )
+    
+    total_outstanding = 0
+
+    is_under_collected = rent_collected < rent_due
+    has_outstanding_balance = total_outstanding > 0
+
+    if not property_obj:
+        abort(404)
+
+    return render_template('property_details.html',
+                           buildings= buildings_obj,
+                           unit_occupied_count=unit_occupied_count,
+                           total_units=total_units,
+                           rent_collected=rent_collected,
+                           rent_due=rent_due,
+                           is_under_collected=is_under_collected,
+                           total_outstanding=total_outstanding,
+                           has_outstanding_balance=has_outstanding_balance,
+                           page_title= property_obj.property_name)
+
+@main.app_errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 @main.route('/payments')
 def payments():

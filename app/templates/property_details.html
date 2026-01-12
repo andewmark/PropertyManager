@@ -9,18 +9,24 @@
 <!--Overview Summary-->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
   <div class="bg-white p-6 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-sm uppercase mb-2">Units Occupied</h3>
-    <p class="text-2xl font-bold text-blue-600">{{ occupied_units }}</p>
+    <h3 class="text-gray-500 text-sm mb-2">Occupany Rate</h3>
+    <p class="text-2xl font-bold text-blue-600">{{ unit_occupied_count }} / {{total_units}}</p>
   </div>
 
   <div class="bg-white p-6 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-sm uppercase mb-2">Active Tenants</h3>
-    <p class="text-2xl font-bold text-green-600">34</p>
+    <h3 class="text-gray-500 text-sm mb-2">Rent Collected (This Month)</h3>
+    <p class="text-2xl font-bold {{'text-red-600' if is_under_collected else 'text-green-600'}}">
+      ${{rent_collected}} / ${{rent_due}}
+      <i class="fa-solid {{ 'fa-circle-exclamation' if is_under_collected else 'fa-circle-check' }} mr-2"></i>  
+    </p>
   </div>
 
   <div class="bg-white p-6 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-sm uppercase mb-2">Outstanding Payments</h3>
-    <p class="text-2xl font-bold text-red-600">$2,150</p>
+    <h3 class="text-gray-500 text-sm mb-2">Outstanding Tenants Balance</h3>
+    <p class="text-2xl font-bold {{ 'text-red-600' if has_outstanding_balance else 'text-green-600' }}">
+      ${{ total_outstanding }}
+      <i class="fa-solid {{ 'fa-circle-exclamation' if has_outstanding_balance else 'fa-circle-check' }} mr-2"></i>
+    </p>
   </div>
 </div>
 
@@ -32,10 +38,26 @@
     </button>
 </div>
 
-<!--Units-->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-    <div class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden relative">
+  {% for building in buildings %}
+  <a href="/buildings/{{ building.building_id }}" class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden relative">
+    
+    <img src="{{ url_for('static', filename=building.image or 'images/default_property.jpg') }}" 
+         class="w-full h-48 object-cover" 
+         alt="{{ building.building_name }}">
 
+    <!-- Badge -->
+    <span class="absolute top-2 right-2 bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+      {{ building.units | length }} Unit{% if building.units | length != 1 %}s{% endif %}
+    </span>
+
+    <div class="p-4">
+      <h3 class="text-xl font-semibold text-gray-800">{{ building.building_name }}</h3>
+      <p class="text-md text-gray-500">{{ building.address.street_number}} {{building.address.street}}, {{building.address.city}}, {{building.address.state}} {{building.address.postal_code}} {{building.address.country}}</p>
     </div>
+
+  </a>
+  {% endfor %}
 </div>
+
 {% endblock %}
