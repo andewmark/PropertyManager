@@ -1,46 +1,140 @@
 {% extends "base.html" %}
 {% block content %}
-<script src="https://kit.fontawesome.com/cd3149d197.js" crossorigin="anonymous"></script>
-<!--Top-->
-<div class="flex items-center justify-between mb-6">
-    <h2 class="text-3xl font-semibold text-gray-800">{{ page_title }}</h2>
+<!-- Bread Crumb -->
+<nav aria-label="breadcrumb" class="flex items-center space-x-1">
+  {% for item in breadcrumb %}
+    <div class="flex items-center">
+      {% if not loop.last %}
+        <a href="{{ item.url }}" class="text-blue-600 hover:underline">{{ item.name }}</a>
+        <p class="text-gray-400 mx-2">/</p>
+      {% else %}
+        <span class="text-gray-800">{{ item.name }}</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+</nav>
+
+<div class="flex flex-wrap items-center justify-between mb-6">
+  <!-- Page title -->
+  <h1 class="text-3xl font-semibold text-gray-800">{{ page_title }}</h2>
+
+  <!-- Action buttons -->
+  <!-- TODO: Make buttons actually do something-->
+  <div class="flex flex-wrap items-center gap-3 mt-2 lg:mt-0">
+    <button class="bg-blue-500 shadow-lg hover:shadow-xl hover:bg-blue-600 transition-transform hover:scale-[1.025] duration-150 text-white font-bold py-2 px-4 rounded-lg">
+      <i class="fa-solid fa-plus"></i>
+      Add Building
+    </button>
+
+    <button class="bg-blue-200 text-blue-600 shadow-lg hover:shadow-xl hover:bg-blue-300 hover:text-blue-700 transition-transform hover:scale-[1.025] duration-150 font-bold py-2 px-4 rounded-lg">
+      <i class="fa-solid fa-pencil"></i>
+      Edit Property
+    </button>
+  </div>
 </div>
 
 <!--Overview Summary-->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-  <div class="bg-white p-6 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-sm mb-2">Occupany Rate</h3>
-    <p class="text-2xl font-bold text-blue-600">{{ unit_occupied_count }} / {{total_units}}</p>
+
+  <!--Occupany Rate Panel-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    <h3 class="text-gray-500 text-md mb-2">Occupany Rate</h3>
+    <p class="text-2xl font-bold text-gray-800">{{ occupancy_rate }}%</p>
+    <p class="text-gray-500 text-sm">{{ unit_occupied_count }} of {{total_units}} units occupied</p> 
   </div>
 
-  <div class="bg-white p-6 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-sm mb-2">Rent Collected (This Month)</h3>
-    <p class="text-2xl font-bold {{'text-red-600' if is_under_collected else 'text-green-600'}}">
-      ${{rent_collected}} / ${{rent_due}}
-      <i class="fa-solid {{ 'fa-circle-exclamation' if is_under_collected else 'fa-circle-check' }} mr-2"></i>  
+  <!--Rent Collected Panel-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    <h3 class="text-gray-500 text-md mb-2">
+      Rent Collected (This Month)
+    </h3>
+
+    <div class="flex items-center gap-1">
+      <p class="text-2xl font-bold text-gray-800">
+      ${{ rent_collected }}
+      </p>
+      <p class="text-md font-semibold text-gray-500 translate-y-1">
+        /${{ rent_due }}
+      </p>
+    </div>
+
+    <div class="flex items-center gap-1">
+      {% if is_under_collected %}
+        <p class="text-md text-red-600">
+          ${{
+            rent_due - rent_collected
+          }} Remaining to be Collected
+        </p>
+
+        <span
+          class="inline-flex items-center justify-center"
+          role="img"
+          aria-label="Rent not fully collected this month"
+          title="Rent not fully collected this month"
+        >
+          <i
+            class="fa-solid fa-circle-exclamation text-red-600 text-md"
+          ></i>
+        </span>
+      {% endif %}
+    </div>
+
+    <p class="text-gray-500 text-sm">
+      Next Rent Due: {{ next_rent_due }}
     </p>
   </div>
 
-  <div class="bg-white p-6 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-sm mb-2">Outstanding Tenants Balance</h3>
-    <p class="text-2xl font-bold {{ 'text-red-600' if has_outstanding_balance else 'text-green-600' }}">
+  <!--Outstanding Tenants Balance Panel-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    <h3 class="text-gray-500 text-md mb-2">
+      Outstanding Tenants Balance
+    </h3>
+
+    <p class="text-2xl font-bold text-black-600">
       ${{ total_outstanding }}
-      <i class="fa-solid {{ 'fa-circle-exclamation' if has_outstanding_balance else 'fa-circle-check' }} mr-2"></i>
     </p>
+    
+    <!--TODO: Link button to page with filtered report-->
+    <div class="flex items-center gap-2 cursor-pointer">
+      {% if total_outstanding > 0 %}
+        <a href='https://alexlevydesigner.com/' target="_blank" class="text-md text-blue-500 hover:underline">
+          View tenants with outstanding balances
+        </a>
+        <i class="fa-solid fa-arrow-right text-blue-500"></i>
+      {% endif %}
+    </div>
   </div>
 </div>
 
 <!--Search Bar-->
-<div class="relative w-80 mb-6">
-    <input type="text" placeholder="Search..." class="px-4 py-2 w-full rounded-full focus:outline-none shadow">
-    <button class="bg-blue-500 p-1 px-3 text-white absolute right-0 top-0 mt-1 mr-2 rounded-full hover:bg-blue-600">
-        <i class="fa-solid fa-arrow-right"></i>
+<div class="mb-6 w-full md:w-1/2 lg:w-1/3 xl:w-1/4">
+  <div class="relative w-full">
+    <!-- Accessible label -->
+    <label for="searchbar" class="sr-only">Search Buildings</label>
+    
+    <!-- Input -->
+    <input
+      type="text"
+      id="searchbar"
+      name="searchbar"
+      placeholder="Search..."
+      class="w-full rounded-full border border-gray-300 px-4 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow"
+    >
+
+    <!-- Search button inside input -->
+    <button
+      type="submit"
+      class="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-1 w-8 rounded-full hover:bg-blue-600 shadow"
+      aria-label="Search"
+    >
+      <i class="fa-solid fa-arrow-right"></i>
     </button>
+  </div>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
   {% for building in buildings %}
-  <a href="/buildings/{{ building.building_id }}" class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden relative">
+  <a href="/properties/{{ building.property_id }}/{{ building.building_id }}" class="bg-white rounded-2xl shadow hover:shadow-lg transition overflow-hidden relative">
     
     <img src="{{ url_for('static', filename=building.image or 'images/default_property.jpg') }}" 
          class="w-full h-48 object-cover" 
