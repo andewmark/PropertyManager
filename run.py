@@ -12,7 +12,6 @@ if database_url:
         wsl_ip = subprocess.check_output(
             "hostname -I | awk '{print $1}'", shell=True
         ).decode().strip()
-        print(f"Detected WSL IP: {wsl_ip}")
     except Exception as e:
         print("Failed to fetch WSL IP:", e)
         wsl_ip = None
@@ -31,9 +30,8 @@ if database_url:
         ))
         # Override environment variable at runtime
         os.environ["DATABASE_URL"] = database_url
-        print(f"Dynamically updated DATABASE_URL: {database_url}")
+        print(f"Dynamically updated DATABASE_URL")
 
-# 4️⃣ Now create the app
 app = create_app()
 
 print("DB Loaded:", bool(os.getenv("DATABASE_URL")))

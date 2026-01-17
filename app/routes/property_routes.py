@@ -26,5 +26,5 @@ def property_detail(property_id):
     return render_template(
         "property_details.html",
         **data,
-        page_title=data["property"].property_name,
+        page_title=data["property"].property_name
     )

@@ -59,6 +59,7 @@ class Unit(db.Model):
     square_feet = db.Column(db.Integer, nullable=False)
     beds = db.Column(db.Integer, nullable=False)
     baths = db.Column(db.Integer, nullable=False)
+    market_rent = db.Column(db.Numeric(10,2), nullable = False)
 
     building = db.relationship("Building", back_populates="units")
 

@@ -1,4 +1,3 @@
-from app.extensions import db
 from app.models import Building
 
 def get_building_by_id(building_id):
