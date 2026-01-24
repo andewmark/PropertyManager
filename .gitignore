@@ -11,6 +11,7 @@ venv/*
 # Environment / config files with secrets
 .env
 config.py
+instance/
 
 # IDE/editor files
 .vscode/
@@ -22,3 +23,5 @@ config.py
 # OS files
 .DS_Store
 Thumbs.db
+
+
