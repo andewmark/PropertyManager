@@ -33,7 +33,7 @@ def fetch_properties_with_summary():
         # join main building for full_address
         .outerjoin(MainBuilding, and_(
             MainBuilding.property_id == Property.property_id,
-            MainBuilding.is_main_building == True
+            MainBuilding.is_main_building
         ))
         .outerjoin(MainAddress, MainAddress.address_id == MainBuilding.address_id)
 
