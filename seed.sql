@@ -98,14 +98,14 @@ INSERT INTO public.tbl_expense_category (category_id, category_name, category_gr
 -- Data for Name: tbl_vendors; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-INSERT INTO public.tbl_vendors (vendor_id, vendor_name, phone, email) VALUES (1, 'City Electric Co', '800-111-2222', 'billing@cityelectric.com');
+INSERT INTO public.tbl_vendors (vendor_id, vendor_name, phone, email, service_type) VALUES (1, 'City Electric Co', '800-111-2222', 'billing@cityelectric.com', 'Electric');
 
 
 --
 -- Data for Name: tbl_maintenance; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-INSERT INTO public.tbl_maintenance (maintenance_request_id, unit_id, tenant_id, description, priority, status, date_requested, date_completed, vendor_id) VALUES (2, 1, 1, 'Leaking kitchen sink', 'High', 'In Progress', '2024-02-10', NULL, 1);
+INSERT INTO public.tbl_maintenance (request_id, unit_id, tenant_id, description, priority, status, date_requested, date_completed, vendor_id) VALUES (2, 1, 1, 'Leaking kitchen sink', 'High', 'In Progress', '2024-02-10', NULL, 1);
 
 
 --
@@ -127,7 +127,7 @@ INSERT INTO public.tbl_property_expenses (expense_id, property_id, building_id, 
 -- Data for Name: tbl_documents; Type: TABLE DATA; Schema: public; Owner: dev
 --
 
-INSERT INTO public.tbl_documents (document_id, property_id, unit_id, expense_id, request_id, stored_filename, orginal_filename, file_path, file_type, file_size, storage_location, uploaded_at, lease_id) VALUES (1, 1, 1, NULL, NULL, 'lease_1a_2024.pdf', 'Lease_John_Doe.pdf', '/documents/leases/', 'application/pdf', '245000', 's3', '2026-01-02 21:00:47.374581', 1);
+INSERT INTO public.tbl_documents (document_id, property_id, unit_id, expense_id, request_id, stored_filename, original_filename, filepath, file_type, file_size, storage_location, uploaded_at, lease_id) VALUES (1, 1, 1, NULL, NULL, 'lease_1a_2024.pdf', 'Lease_John_Doe.pdf', '/documents/leases/', 'application/pdf', '245000', 's3', '2026-01-02 21:00:47.374581', 1);
 
 
 --
@@ -203,7 +203,7 @@ SELECT pg_catalog.setval('public.tbl_lease_lease_id_seq', 1, true);
 -- Name: tbl_maintenance_maintenance_request_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dev
 --
 
-SELECT pg_catalog.setval('public.tbl_maintenance_maintenance_request_id_seq', 2, true);
+SELECT pg_catalog.setval('public.tbl_maintenance_request_id_seq', 2, true);
 
 
 --

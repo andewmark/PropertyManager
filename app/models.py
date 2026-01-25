@@ -110,6 +110,7 @@ class Tenants(db.Model):
     emergency_contact_first_name = db.Column(db.String(150), nullable=False)
     emergency_contact_middle_Initial = db.Column(db.String(1), nullable=True)
     emergency_contact_family_name = db.Column(db.String(150), nullable=False)
+    emergency_contact_phone = db.Column(db.String(15), nullable=True)
 
     lease = db.relationship("Lease", back_populates="tenant", cascade="all, delete-orphan")
     maintenance = db.relationship("Maintenance", back_populates="tenant", cascade="all, delete-orphan")
@@ -141,6 +142,7 @@ class Charges(db.Model):
     period_start = db.Column(db.Date, nullable=True)
     period_end = db.Column(db.Date, nullable=True)
     status = db.Column(db.String, nullable=False)
+    created_at = db.Column(db.Date, nullable=False)
 
     lease = db.relationship("Lease", back_populates="charge")
 
@@ -166,7 +168,7 @@ class Vendors(db.Model):
     vendor_id = db.Column(db.Integer, primary_key=True)
     vendor_name = db.Column(db.String, nullable=False)
     service_type = db.Column(db.String, nullable=False)
-    phone = db.Column(db.String, nullable=True)
+    phone = db.Column(db.String(15), nullable=True)
     email = db.Column(db.String, nullable=True)
 
     maintenance = db.relationship("Maintenance", back_populates="vendor", cascade="all, delete-orphan")
@@ -182,6 +184,7 @@ class Maintenance(db.Model):
     tenant_id = db.Column(db.Integer, db.ForeignKey("tbl_tenants.tenant_id"), nullable=True)
     description = db.Column(db.String(500), nullable=True)
     priority = db.Column(db.String, nullable=False)
+    status = db.Column(db.String, nullable=False)
     date_requested = db.Column(db.Date, nullable=False)
     date_completed = db.Column(db.Date, nullable=True)
     vendor_id = db.Column(db.Integer, db.ForeignKey("tbl_vendors.vendor_id"), nullable=True)
