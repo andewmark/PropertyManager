@@ -23,12 +23,12 @@
   <div class="flex flex-wrap items-center gap-3 mt-2 lg:mt-0">
     <button class="bg-blue-500 shadow-lg hover:shadow-xl hover:bg-blue-600 transition-transform hover:scale-[1.025] duration-150 text-white font-bold py-2 px-4 rounded-lg">
       <i class="fa-solid fa-plus"></i>
-      Add Building
+      Add Unit
     </button>
 
     <button class="bg-blue-200 text-blue-600 shadow-lg hover:shadow-xl hover:bg-blue-300 hover:text-blue-700 transition-transform hover:scale-[1.025] duration-150 font-bold py-2 px-4 rounded-lg">
       <i class="fa-solid fa-pencil"></i>
-      Edit Property
+      Edit Building
     </button>
   </div>
 </div>
@@ -38,17 +38,71 @@
 
   <!--Occupany Rate Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    
+    <h3 class="text-gray-500 text-md mb-2">Occupany Rate</h3>
+    <p class="text-2xl font-bold text-gray-800">{{ occupancy_rate }}%</p>
+    <p class="text-gray-500 text-sm">{{ unit_occupied_count }} of {{total_units}} units occupied</p>
   </div>
 
   <!--Rent Collected Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    
+    <h3 class="text-gray-500 text-md mb-2">
+      Rent Collected (This Month)
+    </h3>
+
+    <div class="flex items-center gap-1">
+      <p class="text-2xl font-bold text-gray-800">
+      ${{ rent_collected }}
+      </p>
+      <p class="text-md font-semibold text-gray-500 translate-y-1">
+        /${{ rent_due }}
+      </p>
+    </div>
+
+    <div class="flex items-center gap-1">
+      {% if is_under_collected %}
+        <p class="text-md text-red-600">
+          ${{
+            rent_due - rent_collected
+          }} Remaining to be Collected
+        </p>
+
+        <span
+          class="inline-flex items-center justify-center"
+          role="img"
+          aria-label="Rent not fully collected this month"
+          title="Rent not fully collected this month"
+        >
+          <i
+            class="fa-solid fa-circle-exclamation text-red-600 text-md"
+          ></i>
+        </span>
+      {% endif %}
+    </div>
+
+    <p class="text-gray-500 text-sm">
+      Next Rent Due: {{ next_rent_due }}
+    </p>
   </div>
 
   <!--Outstanding Tenants Balance Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
+    <h3 class="text-gray-500 text-md mb-2">
+      Outstanding Tenants Balance
+    </h3>
 
+    <p class="text-2xl font-bold text-black-600">
+      ${{ total_outstanding }}
+    </p>
+    
+    <!--TODO: Link button to page with filtered report-->
+    <div class="flex items-center gap-2 cursor-pointer">
+      {% if total_outstanding > 0 %}
+        <a href='https://alexlevydesigner.com/' target="_blank" class="text-md text-blue-500 hover:underline">
+          View tenants with outstanding balances
+        </a>
+        <i class="fa-solid fa-arrow-right text-blue-500"></i>
+      {% endif %}
+    </div>
   </div>
     
 </div>
@@ -77,7 +131,7 @@
              shadow-sm"
     />
 
-    <!-- Clear button (wire up w/ JS later) -->
+    <!-- Clear button -->
     <button
       type="button"
       id="clear-search"
@@ -93,7 +147,7 @@
 
 <div class="overflow-x-auto rounded-2xl shadow">
   <table class="w-full table-fixed border-collapse">
-    <thead class="bg-blue-200">
+    <thead class="bg-gray-300">
       <tr>
         <th class="px-4 py-3 text-left text-md font-semibold text-black">
           Unit Number
