@@ -1,5 +1,6 @@
 from datetime import date
 
+
 def current_month_bounds():
     today = date.today()
     first_day = today.replace(day=1)
