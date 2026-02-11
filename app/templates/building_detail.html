@@ -144,7 +144,7 @@
 </div>
 
 
-
+<!--Units Table-->
 <div class="overflow-x-auto rounded-2xl shadow">
   <table class="w-full table-fixed border-collapse">
     <thead class="bg-gray-300">
@@ -174,7 +174,10 @@
       {% for item in units %}
       <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200 transition-colors">
         <td class="px-4 py-3 truncate">
-          {{ item.unit.unit_number }}
+          <a href="/properties/{{ building.property_id }}/{{ building.building_id }}/{{ item.unit.unit_id }}"
+          class="text-md text-blue-600 hover:underline">
+            {{ item.unit.unit_number }}
+          </a>
         </td>
         <td class="px-4 py-3 truncate">
           {{ item.is_occupied }}
@@ -184,7 +187,11 @@
             <ul class="space-y-1">
               {% for tenant in item.tenants %}
               <li>
-                {{ tenant.first_name }} {{ tenant.family_name}}
+                <!--TODO: Create Tenants Detail Page-->
+                <a href="/"
+                class="text-md text-blue-600 hover:underline">
+                  {{ tenant.first_name }} {{ tenant.family_name}}
+                </a>
               </li>
               {% endfor %}
             </ul>
