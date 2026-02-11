@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-3xl font-semibold text-gray-800 mb-6">Units</h1>
+
+<!--Overview Summary-->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+  <!--Unit Overview Information-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    <h2 class="text-gray-900 text-lg mb-4">Unit Overview</h2>
+
+    <!--Unit Number-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Unit Number</p>
+      <h4 class="text-gray-800 text-lg font-bold">{{ unit.unit_number }}</p>
+      <h5 class="text-gray-700 text-sm font-semibold">{{ unit.beds }}BR / {{ unit.baths }}B</p>
+    </div>
+
+    <!--Square Footage-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Space</h3>
+      <div class="flex items-baseline gap-1">
+        <h4 class="text-gray-800 text-lg font-bold">{{ unit.square_feet }}</h5>
+        <h5 class="text-gray-700 text-sm">sq ft</h5>
+      </div>
+    </div>
+
+    <!--Advertised Rent-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Advertised Rent</h3>
+      <h4 class="text-gray-800 text-lg font-bold">${{ unit.market_rent }}</h4>
+    </div>
+
+    <!--Utilities-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Utilites</h3>
+      
+    </div>
+
+    <!--Included Amenities-->
+    <div>
+      <h3 class="text-gray-400 text-sm">Included Amenities</h3>
+      
+    </div>
+  </div>
+
+  <!--Lease Information Panel-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    <h2 class="text-gray-900 text-lg mb-4">
+      Lease Information
+    </h2>
+
+    <!--Lease Term-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Lease Term</h3>
+      <h4 class="text-gray-700 text-md">Start: | End:</p>
+    </div>
+
+    <!--Financials-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Financials</h3>
+      <p class="text-gray-700 text-md">Rent: | Security Deposit:</p>
+      <p class="text-gray-700 text-md">Fees:</p>
+    </div>
+
+    <!--Lease Type-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Lease Type</h3>
+      
+    </div>
+
+    <!--Included Utilities-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Included Utilities</h3>
+      
+    </div>
+
+    <!--Included Amenities-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Included Amenities</h3>
+
+    </div>
+
+    <!--Documents-->
+    <div>
+      <h3 class="text-gray-400 text-sm">Documents</h3>
+      <p class="text-gray-500 text-md">Lease: [Document goes here]</p>  
+      <!--TODO: Add button or link to list of lease history for unit-->
+      <p class="text-gray-500 text-md">Lease History (This will be a button in blue)</p>
+    </div>
+  </div>
+
+  <!--Tenant Details-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
