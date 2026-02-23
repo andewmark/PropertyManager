@@ -1,0 +1,55 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'tenants' else 'rounded-2xl' }}">
+  <table class="w-full table-fixed border-seperate border-spacing-0">
+    <thead>
+      <tr>
+        <th class="text-sm font-normal text-black border-b border-gray-200">
+        Full Name
+        </th>
+        <th class="text-sm font-normal text-black border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Occupancy status
+        </th>
+        <th class="text-sm font-normal text-gray-800 border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Move-in Date
+        </th>
+        <th class="text-sm font-normal text-gray-800 border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Move-out Date
+        </th>
+        <th class="text-sm font-normal text-gray-800 border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Email
+        </th>
+        <th class="text-sm font-normal text-gray-800 border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Phone
+        </th>
+        <th class="text-sm font-normal text-gray-800 border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Lease
+        </th>
+        <th class="text-sm font-normal text-gray-800 border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Emergency Contact Name
+        </th>
+        <th class="text-sm font-normal text-gray-800 border-b border-l break-words whitespace-normal border-gray-200 p-1">
+          Emergency Contact Phone
+        </th>
+      </tr>
+    </thead>
+
+    <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+        <td class="px-4 py-3 truncate text-center">
+        {{unit.unit_number}}
+        </td>
+        <td class="px-4 py-3 truncate text-center">
+            Test
+        </td>
+    </tr>
+
+    <tr class="hover:bg-gray-100 transition-colors">
+        <td class="px-4 py-3 truncate text-center">
+        {{unit.unit_number}}
+        </td>
+        <td class="px-4 py-3 truncate text-center">
+            Test
+        </td>
+    </tr>
+  </table>
+</div>

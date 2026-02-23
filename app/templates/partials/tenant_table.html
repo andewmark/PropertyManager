@@ -1,0 +1,59 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'tenants' else 'rounded-2xl' }}">
+  
+  <div class="overflow-x-auto w-0 min-w-full">
+    <table class="border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-normal text-black border-b border-gray-200 px-4 py-2 whitespace-nowrap">
+            Full Name
+          </th>
+          <th class="text-sm font-normal text-black border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Occupancy status
+          </th>
+          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Move-in Date
+          </th>
+          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Move-out Date
+          </th>
+          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Email
+          </th>
+          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Phone
+          </th>
+          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Lease
+          </th>
+          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Emergency Contact Name
+          </th>
+          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
+            Emergency Contact Phone
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+          <td class="px-4 py-3 text-center whitespace-nowrap">
+            {{unit.unit_number}}
+          </td>
+          <td class="px-4 py-3 text-center whitespace-nowrap">
+            Test
+          </td>
+        </tr>
+
+        <tr class="hover:bg-gray-100 transition-colors">
+          <td class="px-4 py-3 text-center whitespace-nowrap">
+            {{unit.unit_number}}
+          </td>
+          <td class="px-4 py-3 text-center whitespace-nowrap">
+            Test
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
