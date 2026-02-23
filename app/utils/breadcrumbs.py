@@ -17,16 +17,16 @@ def generate_breadcrumbs(property_id=None, building_id=None, unit_id=None):
         breadcrumb.append(
             {
                 "name": building_obj.building_name,
-                "url": f"/properties/{property_id}/buildings/{building_id}",
+                "url": f"/properties/{property_id}/{building_id}",
             }
         )
 
     if unit_id:
-        unit_obj = get_unit_by_id
+        unit_obj = get_unit_by_id(unit_id)
         breadcrumb.append(
             {
-                "name": f"Unit {unit_obj['number']}",
-                "url": f"/properties/{property_id}/buildings/{building_id}/units/{unit_id}",
+                "name": unit_obj.unit_number,
+                "url": f"/units/{unit_id}",
             }
         )
 

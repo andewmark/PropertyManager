@@ -1,100 +1,176 @@
 {% extends "base.html" %}
 {% block content %}
-<h1 class="text-3xl font-semibold text-gray-800 mb-6">Units</h1>
+<!-- Bread Crumb -->
+<nav aria-label="breadcrumb" class="flex items-center space-x-1">
+  {% for item in breadcrumb %}
+    <div class="flex items-center">
+      {% if not loop.last %}
+        <a href="{{ item.url }}" class="text-blue-600 hover:underline">{{ item.name }}</a>
+        <p class="text-gray-400 mx-2">/</p>
+      {% else %}
+        <span class="text-gray-800">{{ item.name }}</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+</nav>
+
+<div class="flex flex-wrap items-center justify-between mb-6">
+  <!-- Page title -->
+  <h1 class="text-3xl font-semibold text-gray-800">{{ page_title }}</h2>
+
+  <!-- Action buttons -->
+  <!-- TODO: Make buttons actually do something-->
+  <div class="flex flex-wrap items-center gap-3 mt-2 lg:mt-0">
+    <button class="bg-blue-200 text-blue-600 shadow-lg hover:shadow-xl hover:bg-blue-300 hover:text-blue-700 transition-transform hover:scale-[1.025] duration-150 font-bold py-2 px-4 rounded-lg">
+      <i class="fa-solid fa-pencil"></i>
+      Edit Unit
+    </button>
+  </div>
+</div>
 
 <!--Overview Summary-->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="mb-8">
 
   <!--Unit Overview Information-->
-  <div class="bg-white p-5 rounded-2xl shadow">
-    <h2 class="text-gray-900 text-lg mb-4">Unit Overview</h2>
-
-    <!--Unit Number-->
-    <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Unit Number</p>
-      <h4 class="text-gray-800 text-lg font-bold">{{ unit.unit_number }}</p>
-      <h5 class="text-gray-700 text-sm font-semibold">{{ unit.beds }}BR / {{ unit.baths }}B</p>
-    </div>
-
-    <!--Square Footage-->
-    <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Space</h3>
-      <div class="flex items-baseline gap-1">
-        <h4 class="text-gray-800 text-lg font-bold">{{ unit.square_feet }}</h5>
-        <h5 class="text-gray-700 text-sm">sq ft</h5>
+  <div class="bg-white p-5 rounded-2xl shadow grid grid-cols-2">
+    <div>
+      <!--Occupancy Status-->
+      <div class="mb-3">
+        <h3 class="text-gray-400 text-sm">Occupancy Status</h3>
+        {% if occupied %}
+          <span class="font-semibold px-3 py-1 rounded-full">{{ occupied }}</h4>
+        {% endif %}
       </div>
+
+      <!--Current Lease-->
+      <div class="mb-3">
+        <h3 class="text-gray-400 text-sm">Current Lease</h3>
+      </div>
+
+      <!--Next Rent Due-->
+      <div class="mb-3">
+        <h3 class="text-gray-400 text-sm">Next Rent Due</h3>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-2 gap-6">
+  <!--Financial Snapshot-->
+  <div class="bg-white p-5 rounded-2xl shadow"> 
+    <h2 class="text-gray-900 text-md mb-4">Financial Snapshot</h2>
+
+    <!--Current Rent-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Current Rent</h3>
+      <h4 class="text-gray-800 text-lg font-bold"></h4>
     </div>
 
-    <!--Advertised Rent-->
+    <!--Security Deposit-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Security Deposit</h3>
+      <h4 class="text-gray-800 text-lg font-bold"></h4>
+    </div>
+
+    <!--Outstanding Balance For Unit-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Outstanding Balance</h3>
+      <h4 class="text-gray-800 text-lg font-bold"></h4>
+    </div>
+
+    <!--YTD Revenue-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">YTD Revenue</h3>
+      <h4 class="text-gray-800 text-lg font-bold"></h4>
+    </div>
+
+    <!--YTD Expenses-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">YTD Expenses</h3>
+      <h4 class="text-gray-800 text-lg font-bold"></h4>
+    </div>
+  </div>
+
+  <!--Physical Details-->
+  <div class="bg-white p-5 rounded-2xl shadow"> 
+    <h2 class="text-gray-900 text-md mb-4">Physical Details</h2>
+
+    <!--Layout-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Layout</h3>
+      <h4 class="text-gray-800 text-lg font-bold">{{ unit.beds }} Bed | {{ unit.baths }} Bath</h4>
+    </div>
+
+    <!--Sqft-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Sqft</h3>
+      <h4 class="text-gray-800 text-lg font-bold">{{ unit.square_feet}}</h4>
+    </div>
+
+    <!--Market Rent-->
     <div class="mb-3">
       <h3 class="text-gray-400 text-sm">Advertised Rent</h3>
       <h4 class="text-gray-800 text-lg font-bold">${{ unit.market_rent }}</h4>
     </div>
 
-    <!--Utilities-->
+    <!--Utlities-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Utilites</h3>
-      
+      <h3 class="text-gray-400 text-sm">Utilities</h3>
+      <h4 class="text-gray-800 text-lg font-bold"></h4>
     </div>
 
-    <!--Included Amenities-->
-    <div>
-      <h3 class="text-gray-400 text-sm">Included Amenities</h3>
-      
+    <!--Amenities-->
+    <div class="mb-3">
+      <h3 class="text-gray-400 text-sm">Amenities</h3>
+      <h4 class="text-gray-800 text-lg font-bold"></h4>
     </div>
   </div>
 
-  <!--Lease Information Panel-->
-  <div class="bg-white p-5 rounded-2xl shadow">
-    <h2 class="text-gray-900 text-lg mb-4">
-      Lease Information
-    </h2>
-
-    <!--Lease Term-->
-    <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Lease Term</h3>
-      <h4 class="text-gray-700 text-md">Start: | End:</p>
-    </div>
-
-    <!--Financials-->
-    <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Financials</h3>
-      <p class="text-gray-700 text-md">Rent: | Security Deposit:</p>
-      <p class="text-gray-700 text-md">Fees:</p>
-    </div>
-
-    <!--Lease Type-->
-    <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Lease Type</h3>
-      
-    </div>
-
-    <!--Included Utilities-->
-    <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Included Utilities</h3>
-      
-    </div>
-
-    <!--Included Amenities-->
-    <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Included Amenities</h3>
-
-    </div>
-
-    <!--Documents-->
-    <div>
-      <h3 class="text-gray-400 text-sm">Documents</h3>
-      <p class="text-gray-500 text-md">Lease: [Document goes here]</p>  
-      <!--TODO: Add button or link to list of lease history for unit-->
-      <p class="text-gray-500 text-md">Lease History (This will be a button in blue)</p>
-    </div>
-  </div>
-
-  <!--Tenant Details-->
-  <div class="bg-white p-5 rounded-2xl shadow">
-    
-  </div>
 </div>
+
+
+<!--Tabs-->
+<div id='table' class="flex space-x-1 mt-6">
+
+  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='tenants') }}#table"
+     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'tenants' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+    Tenants
+  </a>
+
+  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='leases') }}#table"
+     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'leases' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+    Leases
+  </a>
+
+  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='documents') }}#table"
+     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'documents' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+    Documents
+  </a>
+
+  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='maintenance') }}#table"
+     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'maintenance' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+    Maintenance
+  </a>
+
+  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='payments') }}#table"
+     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'payments' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+    Payments
+  </a>
+
+</div>
+
+{% if tab == 'tenants' %}
+  {% include 'partials/tenant_table.html' %}
+{% elif tab == 'leases' %}
+  {% include 'partials/lease_table.html' %}
+
+{% endif %}
 {% endblock %}
 
 {% block scripts %}

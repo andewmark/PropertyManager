@@ -33,6 +33,15 @@ def get_unit_by_id(unit_id):
 
 
 def get_occupied_unit_ids(unit_ids):
+    """
+    Get Occupied units by unit_id based on if they have an acitve lease
+
+    Args:
+        unit_ids (Arr[Ints]): List of unit_ids
+
+    Returns:
+        set[int]: occupied unit ids 
+    """
     return {
         row.unit_id
         for row in (
@@ -48,6 +57,15 @@ def get_occupied_unit_ids(unit_ids):
 
 
 def get_current_tennants_by_unit_ids(unit_ids):
+    """
+    Get current tenants given a list of unit ids
+
+    Args:
+        unit_ids (Arr[Ints]): List of unit_ids
+
+    Returns:
+        dict - {unit_id: [tenants]}: mapping of units to active tenants
+    """
     rows = (
         db.session.query(Lease.unit_id, Tenants)
         .join(Tenants, Tenants.tenant_id == Lease.tenant_id)
@@ -64,7 +82,6 @@ def get_current_tennants_by_unit_ids(unit_ids):
         tenants_by_unit.setdefault(unit_id, []).append(tenant)
 
     return tenants_by_unit
-
 
 def get_current_rent_by_unit_ids(unit_ids):
     today = date.today()
