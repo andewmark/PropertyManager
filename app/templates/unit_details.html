@@ -14,9 +14,26 @@
   {% endfor %}
 </nav>
 
-<div class="flex flex-wrap items-center justify-between mb-6">
+<div class="flex flex-wrap items-baseline justify-between mb-6">
   <!-- Page title -->
-  <h1 class="text-3xl font-semibold text-gray-800">{{ page_title }}</h2>
+  <div class="flex items-baseline gap-4">
+    <h1 class="text-3xl font-semibold text-gray-800">{{ page_title }}</h1>
+    {% if occupied %}
+      <span class="bg-green-200 text-green-700 text-md font-semibold px-3 py-1 rounded-full"
+            aria-label="Unit Occupied"
+            title="Unit Occupied">
+        Occupied
+        <i class="fa-solid fa-circle-check"></i>
+      </span>
+    {% else %}
+      <span class="bg-red-200 text-red-700 text-md font-semibold px-3 py-1 rounded-full"
+            aria-label="Unit Vacant"
+            title="Unit Vacant">
+        Vacant
+        <i class="fa-solid fa-circle-xmark"></i>
+      </span>
+    {% endif %}
+  </div>
 
   <!-- Action buttons -->
   <!-- TODO: Make buttons actually do something-->
@@ -34,22 +51,14 @@
   <!--Unit Overview Information-->
   <div class="bg-white p-5 rounded-2xl shadow grid grid-cols-2">
     <div>
-      <!--Occupancy Status-->
-      <div class="mb-3">
-        <h3 class="text-gray-400 text-sm">Occupancy Status</h3>
-        {% if occupied %}
-          <span class="font-semibold px-3 py-1 rounded-full">{{ occupied }}</h4>
-        {% endif %}
-      </div>
-
       <!--Current Lease-->
       <div class="mb-3">
-        <h3 class="text-gray-400 text-sm">Current Lease</h3>
+        <h3 class="text-gray-400 text-md">Current Lease</h3>
       </div>
 
       <!--Next Rent Due-->
       <div class="mb-3">
-        <h3 class="text-gray-400 text-sm">Next Rent Due</h3>
+        <h3 class="text-gray-400 text-md">Next Rent Due</h3>
       </div>
 
     </div>

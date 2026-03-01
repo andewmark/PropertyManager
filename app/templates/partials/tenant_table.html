@@ -1,59 +1,49 @@
 <!--Lease Information Panel-->
 <div class="bg-white p-5 shadow mb-8 border border-gray-200
      {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'tenants' else 'rounded-2xl' }}">
-  
-  <div class="overflow-x-auto w-0 min-w-full">
-    <table class="border-separate border-spacing-0">
-      <thead>
-        <tr>
-          <th class="text-sm font-normal text-black border-b border-gray-200 px-4 py-2 whitespace-nowrap">
-            Full Name
-          </th>
-          <th class="text-sm font-normal text-black border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Occupancy status
-          </th>
-          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Move-in Date
-          </th>
-          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Move-out Date
-          </th>
-          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Email
-          </th>
-          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Phone
-          </th>
-          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Lease
-          </th>
-          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Emergency Contact Name
-          </th>
-          <th class="text-sm font-normal text-gray-800 border-b border-l border-gray-200 px-4 py-2 whitespace-nowrap">
-            Emergency Contact Phone
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
-          <td class="px-4 py-3 text-center whitespace-nowrap">
-            {{unit.unit_number}}
-          </td>
-          <td class="px-4 py-3 text-center whitespace-nowrap">
-            Test
-          </td>
-        </tr>
+  <table class="w-full table-fixed border-seperate border-spacing-0">
+    <thead>
+      <tr>
+        <th class="text-sm font-semibold text-black border-b border-gray-200 text-left">
+        Full Name
+        </th>
+        <th class="text-sm font-semibold text-black border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+          Occupancy status
+        </th>
+        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+          Move-in Date
+        </th>
+        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+          Move-out Date
+        </th>
+        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+          Email
+        </th>
+        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+          Phone
+        </th>
+        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+          Lease
+        </th>
+      </tr>
+    </thead>
 
-        <tr class="hover:bg-gray-100 transition-colors">
-          <td class="px-4 py-3 text-center whitespace-nowrap">
-            {{unit.unit_number}}
-          </td>
-          <td class="px-4 py-3 text-center whitespace-nowrap">
+    <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+        <td class="py-3 truncate text-left text-sm">
+        {{unit.unit_number}}
+        </td>
+        <td class="py-3 truncate text-left text-sm">
             Test
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        </td>
+    </tr>
+
+    <tr class="hover:bg-gray-100 transition-colors">
+        <td class="py-3 truncate text-left text-sm">
+        {{unit.unit_number}}
+        </td>
+        <td class="py-3 truncate text-left text-sm">
+            Test
+        </td>
+    </tr>
+  </table>
 </div>
