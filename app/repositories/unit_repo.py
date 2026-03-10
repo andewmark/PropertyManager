@@ -3,7 +3,16 @@ from datetime import date
 from sqlalchemy import distinct, func
 
 from app.extensions import db
-from app.models import Building, Unit, Lease, Tenants, Application, Charges
+from app.models import (
+    Building,
+    Unit,
+    Lease,
+    Tenants,
+    Application,
+    Charges,
+    Payments,
+    PropertyExpenses,
+)
 
 
 def get_occupied_unit_count(property_id):
@@ -40,7 +49,7 @@ def get_occupied_unit_ids(unit_ids):
         unit_ids (Arr[Ints]): List of unit_ids
 
     Returns:
-        set[int]: occupied unit ids 
+        set[int]: occupied unit ids
     """
     return {
         row.unit_id
@@ -82,6 +91,7 @@ def get_current_tennants_by_unit_ids(unit_ids):
         tenants_by_unit.setdefault(unit_id, []).append(tenant)
 
     return tenants_by_unit
+
 
 def get_current_rent_by_unit_ids(unit_ids):
     today = date.today()
@@ -148,3 +158,43 @@ def get_outstanding_by_unit_ids(unit_ids):
     )
 
     return {row.unit_id: row.outstanding_amount for row in rows}
+
+
+def get_current_lease_by_unit_id(unit_id):
+    today = date.today()
+
+    return (
+        db.session.query(Lease.lease_id)
+        .filter(Lease.unit_id == unit_id)
+        .filter(Lease.start_date <= today)
+        .filter(Lease.end_date > today)
+        .filter(Lease.move_out_date.is_(None))
+        .all()
+    )
+
+
+def get_unit_YTD_payments(unit_id):
+    year = date(date.today().year, 1, 1)
+
+    return (
+        db.session.query(func.sum(Payments.payment_amount))
+        .join(Lease, Lease.lease_id == Payments.lease_id)
+        .join(Unit, Unit.unit_id == Lease.unit_id)
+        .filter(Unit.unit_id == unit_id)
+        .filter(
+            Payments.payment_status == "Completed"
+        )  # TODO: Don't include String Literals
+        .filter(Payments.payment_date >= year)
+        .scalar()
+    )
+
+
+def get_unit_YTD_expenses(unit_id):
+    year = date(date.today().year, 1, 1)
+
+    return (
+        db.session.query(func.sum(PropertyExpenses.expense_amount))
+        .filter(Unit.unit_id == unit_id)
+        .filter(PropertyExpenses.date_incurred >= year)
+        .scalar()
+    )

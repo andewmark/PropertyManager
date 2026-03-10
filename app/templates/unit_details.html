@@ -19,18 +19,16 @@
   <div class="flex items-baseline gap-4">
     <h1 class="text-3xl font-semibold text-gray-800">{{ page_title }}</h1>
     {% if occupied %}
-      <span class="bg-green-200 text-green-700 text-md font-semibold px-3 py-1 rounded-full"
-            aria-label="Unit Occupied"
-            title="Unit Occupied">
-        Occupied
-        <i class="fa-solid fa-circle-check"></i>
+      <span class="bg-green-200 text-green-800 text-md font-semibold px-3 py-1 rounded-full flex items-center gap-2"
+            aria-label="Unit Occupied">
+        <h4>Occupied</h4>
+        <i class="fa-regular fa-circle-check"></i>
       </span>
     {% else %}
-      <span class="bg-red-200 text-red-700 text-md font-semibold px-3 py-1 rounded-full"
-            aria-label="Unit Vacant"
-            title="Unit Vacant">
-        Vacant
-        <i class="fa-solid fa-circle-xmark"></i>
+      <span class="bg-red-200 text-red-800 text-md font-semibold px-3 py-1 rounded-full flex items-center gap-2"
+            aria-label="Unit Vacant">
+        <h4>Vacant</h4>
+        <i class="fa-regular fa-circle-xmark"></i>
       </span>
     {% endif %}
   </div>
@@ -53,12 +51,15 @@
     <div>
       <!--Current Lease-->
       <div class="mb-3">
-        <h3 class="text-gray-400 text-md">Current Lease</h3>
+        <h3 class="text-gray-500 text-md">Current Lease</h3>
+        {% for lease in leases %}
+          <h4 class="text-gray-800 text-lg font-bold">{{ lease.start_date }} - {{ lease.end_date }}</h4>
+        {% endfor %}
       </div>
 
       <!--Next Rent Due-->
       <div class="mb-3">
-        <h3 class="text-gray-400 text-md">Next Rent Due</h3>
+        <h3 class="text-gray-500 text-md">Next Rent Due</h3>
       </div>
 
     </div>
@@ -72,32 +73,32 @@
 
     <!--Current Rent-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Current Rent</h3>
-      <h4 class="text-gray-800 text-lg font-bold"></h4>
+      <h3 class="text-gray-500 text-sm">Current Total Rent</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">${{ total_rent }}</h4>
     </div>
 
     <!--Security Deposit-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Security Deposit</h3>
-      <h4 class="text-gray-800 text-lg font-bold"></h4>
+      <h3 class="text-gray-500 text-sm">Current Total Security Deposits</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">${{ total_security_deposits }}</h4>
     </div>
 
     <!--Outstanding Balance For Unit-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Outstanding Balance</h3>
-      <h4 class="text-gray-800 text-lg font-bold"></h4>
+      <h3 class="text-gray-500 text-sm">Outstanding Balance</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">${{ outstanding_balance }}</h4>
     </div>
 
     <!--YTD Revenue-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">YTD Revenue</h3>
-      <h4 class="text-gray-800 text-lg font-bold"></h4>
+      <h3 class="text-gray-500 text-sm">YTD Revenue</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">${{ YTD_revenues }}</h4>
     </div>
 
     <!--YTD Expenses-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">YTD Expenses</h3>
-      <h4 class="text-gray-800 text-lg font-bold"></h4>
+      <h3 class="text-gray-500 text-sm">YTD Expenses</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">${{ YTD_expenses }}</h4>
     </div>
   </div>
 
@@ -107,32 +108,32 @@
 
     <!--Layout-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Layout</h3>
-      <h4 class="text-gray-800 text-lg font-bold">{{ unit.beds }} Bed | {{ unit.baths }} Bath</h4>
+      <h3 class="text-gray-500 text-sm">Layout</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">{{ unit.beds }} Bed | {{ unit.baths }} Bath</h4>
     </div>
 
     <!--Sqft-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Sqft</h3>
-      <h4 class="text-gray-800 text-lg font-bold">{{ unit.square_feet}}</h4>
+      <h3 class="text-gray-500 text-sm">Sqft</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">{{ unit.square_feet}}</h4>
     </div>
 
     <!--Market Rent-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Advertised Rent</h3>
-      <h4 class="text-gray-800 text-lg font-bold">${{ unit.market_rent }}</h4>
+      <h3 class="text-gray-500 text-sm">Advertised Rent</h3>
+      <h4 class="text-gray-800 text-lg font-semibold">${{ unit.market_rent }}</h4>
     </div>
 
     <!--Utlities-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Utilities</h3>
-      <h4 class="text-gray-800 text-lg font-bold"></h4>
+      <h3 class="text-gray-500 text-sm">Utilities</h3>
+      <h4 class="text-gray-800 text-lg font-semibold"></h4>
     </div>
 
     <!--Amenities-->
     <div class="mb-3">
-      <h3 class="text-gray-400 text-sm">Amenities</h3>
-      <h4 class="text-gray-800 text-lg font-bold"></h4>
+      <h3 class="text-gray-500 text-sm">Amenities</h3>
+      <h4 class="text-gray-800 text-lg font-semibold"></h4>
     </div>
   </div>
 
@@ -144,31 +145,31 @@
 
   <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='tenants') }}#table"
      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'tenants' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'tenants' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
     Tenants
   </a>
 
   <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='leases') }}#table"
      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'leases' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'leases' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
     Leases
   </a>
 
   <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='documents') }}#table"
      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'documents' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'documents' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
     Documents
   </a>
 
   <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='maintenance') }}#table"
      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'maintenance' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'maintenance' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
     Maintenance
   </a>
 
   <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='payments') }}#table"
      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'payments' else 'bg-transparent text-gray-500 hover:text-gray-700' }}">
+     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'payments' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
     Payments
   </a>
 

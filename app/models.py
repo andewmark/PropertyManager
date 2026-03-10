@@ -421,3 +421,32 @@ class PropertyExpenses(db.Model):
     documents = db.relationship(
         "Documents", back_populates="property_expense", cascade="all, delete-orphan"
     )
+
+
+class Amenities(db.Model):
+    __tablename__ = "tbl_amenities"
+
+    amenity_id = db.Column(db.Integer, primary_key=True)
+    amenity_name = db.Column(db.String(100), nullable=False)
+
+    unit_amenities = db.relationship(
+        "UnitAmenities", back_populates="amenities", cascade="all, delete-orphan"
+    )
+
+
+class UnitAmenities(db.Model):
+    __tablename__ = "tbl_unit_amenities"
+
+    unit_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False
+    )  # also was pointing to tbl_lease, not tbl_units
+    amenity_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_amenities.amenity_id"), nullable=False
+    )
+
+    __table_args__ = (db.PrimaryKeyConstraint("unit_id", "amenity_id"),)
+
+    units = db.relationship("Unit", back_populates="unit_amenities")
+    amenities = db.relationship(
+        "Amenities", back_populates="unit_amenities"
+    )  # fixed class name
