@@ -5,6 +5,7 @@ from app.repositories.unit_repo import (
     get_unit_YTD_payments,
     get_unit_YTD_expenses,
     get_outstanding_by_unit_ids,
+    get_unit_amenities,
 )
 from app.repositories.lease_repo import get_lease_by_id
 from app.utils.breadcrumbs import generate_breadcrumbs
@@ -77,10 +78,14 @@ def get_unit_dashboard(unit_id, tab):
     if not YTD_expenses:
         YTD_expenses = 0
 
+    # Retrieve Outstanding Balance
     outstanding_balance = 0
     outstanding_dict = get_outstanding_by_unit_ids([unit_id])
     if outstanding_dict:
         outstanding_balance = outstanding_dict[unit_id]
+
+    # Retrieve Amenities
+    amenities = get_unit_amenities(unit_id)
 
     return {
         "unit": unit_obj,
@@ -93,4 +98,5 @@ def get_unit_dashboard(unit_id, tab):
         "YTD_revenues": f"{YTD_revenues:.2f}",
         "YTD_expenses": f"{YTD_expenses:.2f}",
         "outstanding_balance": f"{outstanding_balance:.2f}",
+        "amenities": amenities,
     }

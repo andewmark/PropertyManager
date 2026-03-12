@@ -115,6 +115,9 @@ class Unit(db.Model):
     property_expense = db.relationship(
         "PropertyExpenses", back_populates="unit", cascade="all, delete-orphan"
     )
+    unit_amenities = db.relationship(
+        "UnitAmenities", back_populates="unit", cascade="all, delete-orphan"
+    )
 
 
 class Lease(db.Model):
@@ -446,7 +449,5 @@ class UnitAmenities(db.Model):
 
     __table_args__ = (db.PrimaryKeyConstraint("unit_id", "amenity_id"),)
 
-    units = db.relationship("Unit", back_populates="unit_amenities")
-    amenities = db.relationship(
-        "Amenities", back_populates="unit_amenities"
-    )  # fixed class name
+    unit = db.relationship("Unit", back_populates="unit_amenities")
+    amenities = db.relationship("Amenities", back_populates="unit_amenities")

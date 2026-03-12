@@ -12,6 +12,8 @@ from app.models import (
     Charges,
     Payments,
     PropertyExpenses,
+    Amenities,
+    UnitAmenities,
 )
 
 
@@ -197,4 +199,13 @@ def get_unit_YTD_expenses(unit_id):
         .filter(Unit.unit_id == unit_id)
         .filter(PropertyExpenses.date_incurred >= year)
         .scalar()
+    )
+
+
+def get_unit_amenities(unit_id):
+    return (
+        db.session.query(Amenities.amenity_name)
+        .join(UnitAmenities, UnitAmenities.amenity_id == Amenities.amenity_id)
+        .filter(UnitAmenities.unit_id == unit_id)
+        .all()
     )

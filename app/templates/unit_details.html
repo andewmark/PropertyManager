@@ -133,7 +133,29 @@
     <!--Amenities-->
     <div class="mb-3">
       <h3 class="text-gray-500 text-sm">Amenities</h3>
-      <h4 class="text-gray-800 text-lg font-semibold"></h4>
+
+      {% if amenities %}
+      <div class="flex flex-wrap gap-1.5">
+        {% for amenity in amenities %}
+          <span class="amenity-chip {% if loop.index > 5 %}hidden{% endif %} bg-gray-200 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">
+            {{ amenity.amenity_name }}
+          </span>
+        {% endfor %}
+
+        {% if amenities | length > 5 %}
+        <button
+          id="amenities-toggle"
+          data-expanded="false"
+          onclick="toggleAmenities()"
+          class="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+          >
+            +{{ amenities | length - 5}} more
+        </button>
+        {% endif %}
+      </div>
+      {% else %}
+        <p class="text-gray-400 text-sm">No amenities listed</p>
+      {% endif %}
     </div>
   </div>
 
@@ -184,4 +206,5 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/expand_amenities.js') }}"></script>
 {% endblock %}
