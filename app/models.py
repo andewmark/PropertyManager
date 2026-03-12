@@ -118,6 +118,9 @@ class Unit(db.Model):
     unit_amenities = db.relationship(
         "UnitAmenities", back_populates="unit", cascade="all, delete-orphan"
     )
+    unit_utilities = db.relationship(
+        "UnitUtilities", back_populates="unit", cascade="all, delete-orphan"
+    )
 
 
 class Lease(db.Model):
@@ -451,3 +454,30 @@ class UnitAmenities(db.Model):
 
     unit = db.relationship("Unit", back_populates="unit_amenities")
     amenities = db.relationship("Amenities", back_populates="unit_amenities")
+
+
+class Utilities(db.Model):
+    __tablename__ = "tbl_utilities"
+
+    utility_id = db.Column(db.Integer, primary_key=True)
+    utility_name = db.Column(db.String(100), nullable=False)
+
+    unit_utilities = db.relationship(
+        "UnitUtilities", back_populates="utilities", cascade="all, delete-orphan"
+    )
+
+
+class UnitUtilities(db.Model):
+    __tablename__ = "tbl_unit_utilities"
+
+    unit_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False
+    )  # also was pointing to tbl_lease, not tbl_units
+    utility_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_utilities.utility_id"), nullable=False
+    )
+
+    __table_args__ = (db.PrimaryKeyConstraint("unit_id", "utility_id"),)
+
+    unit = db.relationship("Unit", back_populates="unit_utilities")
+    utilities = db.relationship("Utilities", back_populates="unit_utilities")
