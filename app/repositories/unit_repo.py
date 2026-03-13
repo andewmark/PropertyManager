@@ -1,6 +1,8 @@
 from datetime import date
+from decimal import Decimal
 
 from sqlalchemy import distinct, func
+from sqlalchemy.engine import Row
 
 from app.extensions import db
 from app.models import (
@@ -17,7 +19,7 @@ from app.models import (
 )
 
 
-def get_occupied_unit_count(property_id):
+def get_occupied_unit_count(property_id: int) -> int:
     return (
         db.session.query(distinct(Unit.unit_id))
         .join(Lease)
@@ -30,7 +32,7 @@ def get_occupied_unit_count(property_id):
     )
 
 
-def get_total_unit_count(property_id):
+def get_total_unit_count(property_id: int) -> int:
     return (
         db.session.query(Unit.unit_id)
         .join(Building)
@@ -39,11 +41,11 @@ def get_total_unit_count(property_id):
     )
 
 
-def get_unit_by_id(unit_id):
+def get_unit_by_id(unit_id: int) -> Unit:
     return Unit.query.get(unit_id)
 
 
-def get_occupied_unit_ids(unit_ids):
+def get_occupied_unit_ids(unit_ids: list[int]) -> set[int]:
     """
     Get Occupied units by unit_id based on if they have an acitve lease
 
@@ -67,7 +69,7 @@ def get_occupied_unit_ids(unit_ids):
     }
 
 
-def get_current_tennants_by_unit_ids(unit_ids):
+def get_current_tennants_by_unit_ids(unit_ids: list[int]) -> dict[int, list[Tenants]]:
     """
     Get current tenants given a list of unit ids
 
@@ -95,7 +97,7 @@ def get_current_tennants_by_unit_ids(unit_ids):
     return tenants_by_unit
 
 
-def get_current_rent_by_unit_ids(unit_ids):
+def get_current_rent_by_unit_ids(unit_ids: list[int]) -> dict[int, Decimal]:
     today = date.today()
 
     active_lease_rent_subq = (
@@ -126,7 +128,7 @@ def get_current_rent_by_unit_ids(unit_ids):
     return {row.unit_id: row.rent_amount for row in rows}
 
 
-def get_outstanding_by_unit_ids(unit_ids):
+def get_outstanding_by_unit_ids(unit_ids: int) -> dict[int, Decimal]:
     today = date.today()
 
     applied_subq = (
@@ -162,7 +164,7 @@ def get_outstanding_by_unit_ids(unit_ids):
     return {row.unit_id: row.outstanding_amount for row in rows}
 
 
-def get_current_lease_by_unit_id(unit_id):
+def get_current_lease_by_unit_id(unit_id: int) -> list[Row]:
     today = date.today()
 
     return (
@@ -175,7 +177,7 @@ def get_current_lease_by_unit_id(unit_id):
     )
 
 
-def get_unit_YTD_payments(unit_id):
+def get_unit_YTD_payments(unit_id: int) -> Decimal:
     year = date(date.today().year, 1, 1)
 
     return (
@@ -191,7 +193,7 @@ def get_unit_YTD_payments(unit_id):
     )
 
 
-def get_unit_YTD_expenses(unit_id):
+def get_unit_YTD_expenses(unit_id: int) -> Decimal:
     year = date(date.today().year, 1, 1)
 
     return (
@@ -202,7 +204,7 @@ def get_unit_YTD_expenses(unit_id):
     )
 
 
-def get_unit_amenities(unit_id):
+def get_unit_amenities(unit_id: int) -> Decimal:
     return (
         db.session.query(Amenities.amenity_name)
         .join(UnitAmenities, UnitAmenities.amenity_id == Amenities.amenity_id)

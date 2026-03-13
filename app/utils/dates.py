@@ -1,7 +1,7 @@
 from datetime import date
 
 
-def current_month_bounds():
+def current_month_bounds() -> tuple[date, date, date]:
     today = date.today()
     first_day = today.replace(day=1)
 

@@ -1,3 +1,5 @@
+from typing import Any
+
 from app.repositories.unit_repo import (
     get_unit_by_id,
     get_occupied_unit_ids,
@@ -12,7 +14,7 @@ from app.utils.breadcrumbs import generate_breadcrumbs
 from app.repositories.building_repo import get_building_by_id
 
 
-def get_unit_dashboard(unit_id, tab):
+def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
     # Validate Parameters
     if unit_id == 0:
         raise ValueError("Unit ID Required")

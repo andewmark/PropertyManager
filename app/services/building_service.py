@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from app.repositories.property_repo import get_property_by_id
 from app.repositories.building_repo import get_building_by_id_and_property
 from app.utils.dates import current_month_bounds
@@ -14,20 +16,22 @@ from app.repositories.finance_repo import (
     get_total_outstanding_for_building,
 )
 
+from app.models import Building
+
 from app.utils.breadcrumbs import generate_breadcrumbs
 
 
-def get_building_dashboard(property_id, building_id):
+def get_building_dashboard(property_id: int, building_id: int) -> dict[str, Any] | None:
     property_obj = get_property_by_id(property_id)
     building_obj = get_building_by_id_and_property(building_id, property_id)
-
-    today, first_day, next_month = current_month_bounds()
 
     if not property_obj or not building_obj:
         return None
 
+    today, first_day, next_month = current_month_bounds()
     breadcrumb = generate_breadcrumbs(property_id=property_id, building_id=building_id)
 
+    building_obj = cast(Building, building_obj)
     units = building_obj.units
     unit_ids = [unit.unit_id for unit in units]
 
