@@ -29,10 +29,18 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
 
     # Retrieve Unit Object
     unit_obj = get_unit_by_id(unit_id)
+    if not unit_obj:
+        raise ValueError(f"Unit not found for unit_id: {unit_id}")
     building_id = unit_obj.building_id
+
+    # Check Validity of building_id
+    if not building_id:
+        raise ValueError(f"Invalid Unit Object of unit_id: {unit_id}")
 
     # Retrieve Building Object
     building_obj = get_building_by_id(building_id)
+    if not building_obj:
+        raise ValueError(f"Building not found for building_id: {building_id}")
     property_id = building_obj.property_id
 
     # Retrieve Lease Object

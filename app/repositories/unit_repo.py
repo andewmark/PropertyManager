@@ -121,14 +121,14 @@ def get_current_rent_by_unit_ids(unit_ids: list[int]) -> dict[int, Decimal]:
         .outerjoin(
             active_lease_rent_subq, active_lease_rent_subq.c.unit_id == Unit.unit_id
         )
-        .filter(Unit.unit_id.in_(unit_ids))
+        .filter(Unit.unit_id.in_(unit_ids))  # type: ignore
         .all()
     )
 
     return {row.unit_id: row.rent_amount for row in rows}
 
 
-def get_outstanding_by_unit_ids(unit_ids: int) -> dict[int, Decimal]:
+def get_outstanding_by_unit_ids(unit_ids: list[int]) -> dict[int, Decimal]:
     today = date.today()
 
     applied_subq = (
@@ -164,11 +164,11 @@ def get_outstanding_by_unit_ids(unit_ids: int) -> dict[int, Decimal]:
     return {row.unit_id: row.outstanding_amount for row in rows}
 
 
-def get_current_lease_by_unit_id(unit_id: int) -> list[Row]:
+def get_current_lease_by_unit_id(unit_id: int) -> list[Lease]:
     today = date.today()
 
     return (
-        db.session.query(Lease.lease_id)
+        db.session.query(Lease)
         .filter(Lease.unit_id == unit_id)
         .filter(Lease.start_date <= today)
         .filter(Lease.end_date > today)

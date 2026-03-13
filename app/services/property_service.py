@@ -1,3 +1,6 @@
+from typing import Any
+from decimal import Decimal
+
 from app.repositories.property_repo import (
     fetch_properties_with_summary,
     get_property_by_id,
@@ -24,7 +27,7 @@ def get_properties_overview():
     return fetch_properties_with_summary()
 
 
-def get_property_dashboard(property_id):
+def get_property_dashboard(property_id: int) -> dict[str, Any] | None:
     property_obj = get_property_by_id(property_id)
 
     if not property_obj:
@@ -54,6 +57,6 @@ def get_property_dashboard(property_id):
         "rent_due": rent_due,
         "next_rent_due": next_rent_due,
         "total_outstanding": total_outstanding,
-        "is_under_collected": rent_collected < rent_due,
+        "is_under_collected": (rent_collected or Decimal(0)) < (rent_due or Decimal(0)),
         "breadcrumb": breadcrumb,
     }

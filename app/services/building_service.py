@@ -1,4 +1,5 @@
 from typing import Any, cast
+from decimal import Decimal
 
 from app.repositories.property_repo import get_property_by_id
 from app.repositories.building_repo import get_building_by_id_and_property
@@ -31,9 +32,8 @@ def get_building_dashboard(property_id: int, building_id: int) -> dict[str, Any]
     today, first_day, next_month = current_month_bounds()
     breadcrumb = generate_breadcrumbs(property_id=property_id, building_id=building_id)
 
-    building_obj = cast(Building, building_obj)
     units = building_obj.units
-    unit_ids = [unit.unit_id for unit in units]
+    unit_ids = [unit.unit_id for unit in units]  # type: ignore
 
     # Retrieve per Unit data
     occupied_unit_ids = get_occupied_unit_ids(unit_ids)
@@ -43,7 +43,7 @@ def get_building_dashboard(property_id: int, building_id: int) -> dict[str, Any]
 
     units_data = []
 
-    for unit in units:
+    for unit in units:  # type: ignore
         units_data.append(
             {
                 "unit": unit,
@@ -72,7 +72,7 @@ def get_building_dashboard(property_id: int, building_id: int) -> dict[str, Any]
         "occupancy_rate": occupancy_rate,
         "rent_collected": rent_collected,
         "rent_due": rent_due,
-        "is_under_collected": rent_collected < rent_due,
+        "is_under_collected": (rent_collected or Decimal(0)) < (rent_due or Decimal(0)),
         "total_outstanding": total_outstanding,
         "next_rent_due": next_rent_due,
         "breadcrumb": breadcrumb,
