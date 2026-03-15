@@ -1,49 +1,57 @@
 <!--Lease Information Panel-->
-<div class="bg-white p-5 shadow mb-8 border border-gray-200
-     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'tenants' else 'rounded-2xl' }}">
-  <table class="w-full table-fixed border-seperate border-spacing-0">
-    <thead>
-      <tr>
-        <th class="text-sm font-semibold text-black border-b border-gray-200 text-left">
-        Full Name
-        </th>
-        <th class="text-sm font-semibold text-black border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-          Occupancy status
-        </th>
-        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-          Move-in Date
-        </th>
-        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-          Move-out Date
-        </th>
-        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-          Email
-        </th>
-        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-          Phone
-        </th>
-        <th class="text-sm font-semibold text-gray-800 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-          Lease
-        </th>
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'leases' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Lease #
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+          Full Name
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Occupancy status
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Move-in Date
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Move-out Date
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Email
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Phone
+          </th>
+        </tr>
+      </thead>
+
+      {% for row in leases %}
+        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+          <td class="py-3 text-left text-sm">
+              {{ row.lease.lease_id }}
+          </td>
+          <td class="py-3 text-left text-sm">
+            {{ row.tenant.family_name }}, {{ row.tenant.first_name }} {{ row.tenant.middle_name }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ "Active" if row.is_active else "Inactive" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.lease.start_date }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.lease.move_out_date if row.lease.move_out_date else "-" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.tenant.email if row.tenant.email else "-" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.tenant.phone if row.tenant.phone else "-" }}
+          </td>
       </tr>
-    </thead>
-
-    <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
-        <td class="py-3 truncate text-left text-sm">
-        {{unit.unit_number}}
-        </td>
-        <td class="py-3 truncate text-left text-sm">
-            Test
-        </td>
-    </tr>
-
-    <tr class="hover:bg-gray-100 transition-colors">
-        <td class="py-3 truncate text-left text-sm">
-        {{unit.unit_number}}
-        </td>
-        <td class="py-3 truncate text-left text-sm">
-            Test
-        </td>
-    </tr>
-  </table>
+      {% endfor %}
+    </table>
 </div>

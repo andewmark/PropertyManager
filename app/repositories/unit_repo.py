@@ -16,6 +16,9 @@ from app.models import (
     PropertyExpenses,
     Amenities,
     UnitAmenities,
+    Utilities,
+    UnitUtilities,
+    Documents
 )
 
 
@@ -96,6 +99,24 @@ def get_current_tennants_by_unit_ids(unit_ids: list[int]) -> dict[int, list[Tena
 
     return tenants_by_unit
 
+def get_tenants_information_by_unit(unit_id: int) -> list[tuple[Tenants, Lease]]:
+    """
+    returns a list of tenant information
+
+    Args:
+        unit_id: int - unit id to be filtered
+    
+    Returns:
+        list[tuple[Tenant, Lease]]: list of tenant information from specified unit
+    """
+    return (
+        db.session.query(
+            Tenants, Lease
+        )
+        .join(Lease, Tenants.tenant_id == Lease.tenant_id)
+        .filter(Lease.unit_id == unit_id)
+        .all()
+    )
 
 def get_current_rent_by_unit_ids(unit_ids: list[int]) -> dict[int, Decimal]:
     today = date.today()
@@ -211,3 +232,14 @@ def get_unit_amenities(unit_id: int) -> Decimal:
         .filter(UnitAmenities.unit_id == unit_id)
         .all()
     )
+
+def get_unit_utlities(unit_id: int) -> Decimal:
+    return (
+        db.session.query(Utilities.utility_name)
+        .join(UnitUtilities, UnitUtilities.utility_id == Utilities.utility_id)
+        .filter(UnitUtilities.unit_id == unit_id)
+        .all()
+    )
+
+def get_unit_documents(unit_id: int) -> list[Documents]:
+    return Documents.query.get(unit_id)

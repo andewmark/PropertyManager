@@ -151,6 +151,7 @@ class Lease(db.Model):
     charge = db.relationship(
         "Charges", back_populates="lease", cascade="all, delete-orphan"
     )
+    documents = db.relationship("Documents", back_populates="lease", cascade="all, delete-orphan")
 
 
 class Tenants(db.Model):
@@ -377,19 +378,31 @@ class Documents(db.Model):
     request_id = db.Column(
         db.Integer, db.ForeignKey("tbl_maintenance.request_id"), nullable=True
     )
+    document_type_id = db.Column(db.Integer, db.ForeignKey("tbl_document_types.document_type_id"))
+    lease_id = db.Column(db.Integer, db.ForeignKey("tbl_lease.lease_id"), nullable=True)
     filepath = db.Column(db.String(1000), nullable=False)
     stored_filename = db.Column(db.String(1000), nullable=False)
     original_filename = db.Column(db.String(1000), nullable=False)
-    file_type = db.Column(db.String(15), nullable=False)
     file_size = db.Column(db.String(15), nullable=False)
     storage_location = db.Column(db.String(1000), nullable=False)
     uploaded_at = db.Column(db.Date, nullable=False)
-    lease_id = db.Column(db.Integer, db.ForeignKey("tbl_lease.lease_id"), nullable=True)
 
     property = db.relationship("Property", back_populates="documents")
     unit = db.relationship("Unit", back_populates="documents")
     maintenance = db.relationship("Maintenance", back_populates="documents")
     property_expense = db.relationship("PropertyExpenses", back_populates="documents")
+    lease = db.relationship("Lease", back_populates="documents")
+    document_type = db.relationship("DocumentTypes", back_populates="documents")
+
+
+class DocumentTypes(db.Model):
+    __tablename__ = "tbl_document_types"
+
+    document_type_id = db.Column(db.Integer, primary_key=True)
+    document_type = db.Column(db.String(50), nullable= False)
+    category = db.Column(db.String(50), nullable=False)
+
+    documents = db.relationship("Documents", back_populates="document_type", cascade="all, delete-orphan")
 
 
 class PropertyExpenses(db.Model):
@@ -450,7 +463,7 @@ class UnitAmenities(db.Model):
 
     unit_id = db.Column(
         db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False
-    )  # also was pointing to tbl_lease, not tbl_units
+    )  
     amenity_id = db.Column(
         db.Integer, db.ForeignKey("tbl_amenities.amenity_id"), nullable=False
     )
@@ -477,7 +490,7 @@ class UnitUtilities(db.Model):
 
     unit_id = db.Column(
         db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False
-    )  # also was pointing to tbl_lease, not tbl_units
+    )  
     utility_id = db.Column(
         db.Integer, db.ForeignKey("tbl_utilities.utility_id"), nullable=False
     )

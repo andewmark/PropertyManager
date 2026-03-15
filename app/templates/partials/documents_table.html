@@ -1,0 +1,57 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'leases' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            File Name
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Type
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Associated Lease
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Associated Tenant
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Date
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Uploaded By
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
+            Actions
+          </th>
+        </tr>
+      </thead>
+
+      {% for row in leases %}
+        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+          <td class="py-3 text-left text-sm">
+              {{ row.stored_filename }}
+          </td>
+          <td class="py-3 text-left text-sm">
+            {{ row.file_type }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.lease_id if row.lease_id else "-" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.lease.move_out_date if row.lease.move_out_date else "-" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.tenant.email if row.tenant.email else "-" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.tenant.phone if row.tenant.phone else "-" }}
+          </td>
+      </tr>
+      {% endfor %}
+    </table>
+</div>

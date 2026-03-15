@@ -52,7 +52,7 @@
       <!--Current Lease-->
       <div class="mb-3">
         <h3 class="text-gray-500 text-md">Current Lease</h3>
-        {% for lease in leases %}
+        {% for lease in current_leases %}
           <h4 class="text-gray-800 text-lg font-bold">{{ lease.start_date }} - {{ lease.end_date }}</h4>
         {% endfor %}
       </div>
@@ -127,7 +127,28 @@
     <!--Utlities-->
     <div class="mb-3">
       <h3 class="text-gray-500 text-sm">Utilities</h3>
-      <h4 class="text-gray-800 text-lg font-semibold"></h4>
+      {% if utilities %}
+      <div class="flex flex-wrap gap-1.5">
+        {% for utility in utilities %}
+          <span class="utility-chip {% if loop.index > 5 %}hidden{% endif %} bg-gray-200 text-gray-700 text-xs font-medium px-2.5 py-1 rounded-full">
+            {{ utility.utility_name }}
+          </span>
+        {% endfor %}
+
+        {% if utilities | length > 5 %}
+        <button
+          id="utilities-toggle"
+          data-expanded="false"
+          onclick="toggleUtilities()"
+          class="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors"
+          >
+            +{{ utilities | length - 5}} more
+        </button>
+        {% endif %}
+      </div>
+      {% else %}
+        <p class="text-gray-400 text-sm">No utilities listed</p>
+      {% endif %}
     </div>
 
     <!--Amenities-->
@@ -163,48 +184,45 @@
 
 
 <!--Tabs-->
-<div id='table' class="flex space-x-1 mt-6">
+<div class="overflow-x-auto min-w-0 mt-6">
+  <div id='table' class="flex whitespace-nowrap space-x-1">
 
-  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='tenants') }}#table"
-     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'tenants' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
-    Tenants
-  </a>
+    <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='leases') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'leases' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Leases
+    </a>
 
-  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='leases') }}#table"
-     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'leases' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
-    Leases
-  </a>
+    <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='documents') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'documents' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Documents
+    </a>
 
-  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='documents') }}#table"
-     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'documents' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
-    Documents
-  </a>
+    <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='maintenance') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'maintenance' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Maintenance
+    </a>
 
-  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='maintenance') }}#table"
-     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'maintenance' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
-    Maintenance
-  </a>
+    <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='payments') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'payments' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Payments
+    </a>
 
-  <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='payments') }}#table"
-     class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-     {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'payments' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
-    Payments
-  </a>
+  </div>
 
+  {% if tab == 'leases' %}
+    {% include 'partials/lease_table.html' %}
+  {% elif tab == 'documents' %}
+    {% include 'partials/documents_table.html' %}
+
+  {% endif %}
+  {% endblock %}
 </div>
-
-{% if tab == 'tenants' %}
-  {% include 'partials/tenant_table.html' %}
-{% elif tab == 'leases' %}
-  {% include 'partials/lease_table.html' %}
-
-{% endif %}
-{% endblock %}
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/expand_amenities.js') }}"></script>
+<script src="{{ url_for('static', filename='js/expand_utilities.js') }}"></script>
 {% endblock %}
