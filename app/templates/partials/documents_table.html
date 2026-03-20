@@ -17,7 +17,7 @@
             Associated Tenant
           </th>
           <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-            Date
+            Uploaded Date
           </th>
           <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
             Uploaded By
@@ -28,28 +28,28 @@
         </tr>
       </thead>
 
-      {% for row in leases %}
+      {% for row in documents %}
         <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
           <td class="py-3 text-left text-sm">
-              {{ row.stored_filename }}
+              {{ row.Documents.stored_filename }}
           </td>
           <td class="py-3 text-left text-sm">
-            {{ row.file_type }}
+            {{ row.document_type }}
           </td>
           <td class="py-3 text-left text-sm">
-              {{ row.lease_id if row.lease_id else "-" }}
+              {{ row.Documents.lease_id if row.Documents.lease_id else "-" }}
           </td>
           <td class="py-3 text-left text-sm">
-              
+              {{ (row.family_name ~ ', ' ~ row.first_name ~ ' ' ~ row.middle_name) if row.family_name else "-" }}
           </td>
           <td class="py-3 text-left text-sm">
-              {{ row.lease.move_out_date if row.lease.move_out_date else "-" }}
+              {{ row.Documents.uploaded_at }}
           </td>
           <td class="py-3 text-left text-sm">
-              {{ row.tenant.email if row.tenant.email else "-" }}
+              -
           </td>
           <td class="py-3 text-left text-sm">
-              {{ row.tenant.phone if row.tenant.phone else "-" }}
+              -
           </td>
       </tr>
       {% endfor %}

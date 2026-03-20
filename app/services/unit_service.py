@@ -135,5 +135,6 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
         "outstanding_balance": f"{outstanding_balance:.2f}",
         "amenities": amenities,
         "utilities": utilties,
-        "leases": leases
+        "leases": leases,
+        "documents": documents
     }

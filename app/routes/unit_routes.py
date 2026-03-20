@@ -6,7 +6,7 @@ unit_bp = Blueprint("unit", __name__)
 
 @unit_bp.route("/units/<int:unit_id>")
 def unit_detail( unit_id):
-    tab = request.args.get("tab", "tenants")
+    tab = request.args.get("tab", "leases")
     
     data = get_unit_dashboard(unit_id, tab)
 
