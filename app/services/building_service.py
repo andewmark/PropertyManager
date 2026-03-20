@@ -1,4 +1,4 @@
-from typing import Any, cast
+from typing import Any
 from decimal import Decimal
 
 from app.repositories.property_repo import get_property_by_id
@@ -16,8 +16,6 @@ from app.repositories.finance_repo import (
     get_building_next_rent_due_date,
     get_total_outstanding_for_building,
 )
-
-from app.models import Building
 
 from app.utils.breadcrumbs import generate_breadcrumbs
 

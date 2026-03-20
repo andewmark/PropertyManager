@@ -2,7 +2,6 @@ from datetime import date
 from decimal import Decimal
 
 from sqlalchemy import distinct, func
-from sqlalchemy.engine import Row
 
 from app.extensions import db
 from app.models import (
@@ -19,7 +18,7 @@ from app.models import (
     Utilities,
     UnitUtilities,
     Documents,
-    DocumentTypes
+    DocumentTypes,
 )
 
 
@@ -100,24 +99,24 @@ def get_current_tennants_by_unit_ids(unit_ids: list[int]) -> dict[int, list[Tena
 
     return tenants_by_unit
 
+
 def get_tenants_information_by_unit(unit_id: int) -> list[tuple[Tenants, Lease]]:
     """
     returns a list of tenant information
 
     Args:
         unit_id: int - unit id to be filtered
-    
+
     Returns:
         list[tuple[Tenant, Lease]]: list of tenant information from specified unit
     """
     return (
-        db.session.query(
-            Tenants, Lease
-        )
+        db.session.query(Tenants, Lease)
         .join(Lease, Tenants.tenant_id == Lease.tenant_id)
         .filter(Lease.unit_id == unit_id)
         .all()
     )
+
 
 def get_unit_documents(unit_id: int) -> list[tuple[Documents, str, str, str, str]]:
     """
@@ -130,14 +129,21 @@ def get_unit_documents(unit_id: int) -> list[tuple[Documents, str, str, str, str
     """
     return (
         db.session.query(
-            Documents, DocumentTypes.document_type, Tenants.first_name, Tenants.middle_name, Tenants.family_name
+            Documents,
+            DocumentTypes.document_type,
+            Tenants.first_name,
+            Tenants.middle_name,
+            Tenants.family_name,
         )
         .outerjoin(Lease, Documents.lease_id == Lease.lease_id)
         .outerjoin(Tenants, Lease.tenant_id == Tenants.tenant_id)
-        .join(DocumentTypes, DocumentTypes.document_type_id == Documents.document_type_id)
+        .join(
+            DocumentTypes, DocumentTypes.document_type_id == Documents.document_type_id
+        )
         .filter(Documents.unit_id == unit_id)
         .all()
     )
+
 
 def get_current_rent_by_unit_ids(unit_ids: list[int]) -> dict[int, Decimal]:
     today = date.today()
@@ -253,6 +259,7 @@ def get_unit_amenities(unit_id: int) -> Decimal:
         .filter(UnitAmenities.unit_id == unit_id)
         .all()
     )
+
 
 def get_unit_utlities(unit_id: int) -> Decimal:
     return (

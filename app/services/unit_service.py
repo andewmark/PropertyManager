@@ -10,7 +10,7 @@ from app.repositories.unit_repo import (
     get_unit_amenities,
     get_unit_utlities,
     get_tenants_information_by_unit,
-    get_unit_documents
+    get_unit_documents,
 )
 from app.repositories.lease_repo import get_lease_by_id
 from app.utils.breadcrumbs import generate_breadcrumbs
@@ -89,7 +89,7 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
     outstanding_dict = get_outstanding_by_unit_ids([unit_id])
     if outstanding_dict:
         outstanding_balance = outstanding_dict[unit_id]
-    
+
     # Retrieve Utilities
     utilties = get_unit_utlities(unit_id)
 
@@ -108,19 +108,15 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
         if raw_leases:
             for tenant, lease in raw_leases:
                 is_active = (
-                    lease.end_date >= today and
-                    lease.start_date <= today and
-                    lease.move_out_date is None
+                    lease.end_date >= today
+                    and lease.start_date <= today
+                    and lease.move_out_date is None
                 )
-                leases.append({
-                    "tenant": tenant,
-                    "lease": lease,
-                    "is_active": is_active
-                })
+                leases.append(
+                    {"tenant": tenant, "lease": lease, "is_active": is_active}
+                )
     elif tab == "documents":
         documents = get_unit_documents(unit_id)
-                
-            
 
     return {
         "unit": unit_obj,
@@ -136,5 +132,5 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
         "amenities": amenities,
         "utilities": utilties,
         "leases": leases,
-        "documents": documents
+        "documents": documents,
     }

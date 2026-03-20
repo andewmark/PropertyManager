@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from app.extensions import db
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped
 
 from decimal import Decimal
 
@@ -151,7 +151,9 @@ class Lease(db.Model):
     charge = db.relationship(
         "Charges", back_populates="lease", cascade="all, delete-orphan"
     )
-    documents = db.relationship("Documents", back_populates="lease", cascade="all, delete-orphan")
+    documents = db.relationship(
+        "Documents", back_populates="lease", cascade="all, delete-orphan"
+    )
 
 
 class Tenants(db.Model):
@@ -378,7 +380,9 @@ class Documents(db.Model):
     request_id = db.Column(
         db.Integer, db.ForeignKey("tbl_maintenance.request_id"), nullable=True
     )
-    document_type_id = db.Column(db.Integer, db.ForeignKey("tbl_document_types.document_type_id"))
+    document_type_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_document_types.document_type_id")
+    )
     lease_id = db.Column(db.Integer, db.ForeignKey("tbl_lease.lease_id"), nullable=True)
     filepath = db.Column(db.String(1000), nullable=False)
     stored_filename = db.Column(db.String(1000), nullable=False)
@@ -399,10 +403,12 @@ class DocumentTypes(db.Model):
     __tablename__ = "tbl_document_types"
 
     document_type_id = db.Column(db.Integer, primary_key=True)
-    document_type = db.Column(db.String(50), nullable= False)
+    document_type = db.Column(db.String(50), nullable=False)
     category = db.Column(db.String(50), nullable=False)
 
-    documents = db.relationship("Documents", back_populates="document_type", cascade="all, delete-orphan")
+    documents = db.relationship(
+        "Documents", back_populates="document_type", cascade="all, delete-orphan"
+    )
 
 
 class PropertyExpenses(db.Model):
@@ -461,9 +467,7 @@ class Amenities(db.Model):
 class UnitAmenities(db.Model):
     __tablename__ = "tbl_unit_amenities"
 
-    unit_id = db.Column(
-        db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False
-    )  
+    unit_id = db.Column(db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False)
     amenity_id = db.Column(
         db.Integer, db.ForeignKey("tbl_amenities.amenity_id"), nullable=False
     )
@@ -488,9 +492,7 @@ class Utilities(db.Model):
 class UnitUtilities(db.Model):
     __tablename__ = "tbl_unit_utilities"
 
-    unit_id = db.Column(
-        db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False
-    )  
+    unit_id = db.Column(db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False)
     utility_id = db.Column(
         db.Integer, db.ForeignKey("tbl_utilities.utility_id"), nullable=False
     )
