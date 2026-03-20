@@ -280,6 +280,9 @@ class Maintenance(db.Model):
     documents = db.relationship(
         "Documents", back_populates="maintenance", cascade="all, delete-orphan"
     )
+    property_expense = db.relationship(
+        "PropertyExpenses", back_populates="maintenance", cascade="all, delete-orphan"
+    )
 
 
 class ExpenseCategory(db.Model):
@@ -436,6 +439,7 @@ class PropertyExpenses(db.Model):
         db.ForeignKey("tbl_recurring_expenses.recurring_rule_id"),
         nullable=True,
     )
+    request_id = db.Column(db.Integer, db.ForeignKey("tbl_maintenance"))
 
     property = db.relationship("Property", back_populates="property_expense")
     building = db.relationship("Building", back_populates="property_expense")
@@ -447,7 +451,7 @@ class PropertyExpenses(db.Model):
     recurring_expenses = db.relationship(
         "RecurringExpenses", back_populates="property_expense"
     )
-
+    maintenance = db.relationship("Maintenance", back_populates="property_expense")
     documents = db.relationship(
         "Documents", back_populates="property_expense", cascade="all, delete-orphan"
     )
