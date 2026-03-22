@@ -17,9 +17,6 @@
             Status
           </th>
           <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
-            Description
-          </th>
-          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
             Tenant
           </th>
           <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-1 text-left">
@@ -30,11 +27,30 @@
           </th>
         </tr>
       </thead>
-
-        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
-          <td class="py-3 text-left text-sm">
-
-          </td>
-      </tr>
+        {% for row in maintenance %}
+          <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+            <td class="py-3 text-left text-sm">
+              {{ row.request_id }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.date_requested }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.priority }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.status }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.tenant_name if row.tenant_id else "-" }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.vendor_name if row.vendor_id else "-" }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.expense_amount if row.expense_id else "-" }}
+            </td>
+          </tr>
+        {% endfor %}
     </table>
 </div>

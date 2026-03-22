@@ -19,6 +19,8 @@ from app.models import (
     UnitUtilities,
     Documents,
     DocumentTypes,
+    Maintenance,
+    Vendors,
 )
 
 
@@ -252,7 +254,7 @@ def get_unit_YTD_expenses(unit_id: int) -> Decimal:
     )
 
 
-def get_unit_amenities(unit_id: int) -> Decimal:
+def get_unit_amenities(unit_id: int) -> list[Amenities]:
     return (
         db.session.query(Amenities.amenity_name)
         .join(UnitAmenities, UnitAmenities.amenity_id == Amenities.amenity_id)
@@ -261,10 +263,36 @@ def get_unit_amenities(unit_id: int) -> Decimal:
     )
 
 
-def get_unit_utlities(unit_id: int) -> Decimal:
+def get_unit_utlities(unit_id: int) -> list[Utilities]:
     return (
         db.session.query(Utilities.utility_name)
         .join(UnitUtilities, UnitUtilities.utility_id == Utilities.utility_id)
         .filter(UnitUtilities.unit_id == unit_id)
+        .all()
+    )
+
+
+def get_unit_maintenance(unit_id: int) -> list[Maintenance]:
+    return (
+        db.session.query(
+            Maintenance.request_id,
+            Maintenance.date_requested,
+            Maintenance.priority,
+            Maintenance.status,
+            Tenants.tenant_id,
+            func.concat(
+                Tenants.family_name, ", ", Tenants.first_name, " ", Tenants.middle_name
+            ).label("tenant_name"),
+            Vendors.vendor_id,
+            Vendors.vendor_name,
+            PropertyExpenses.expense_id,
+            PropertyExpenses.expense_amount,
+        )
+        .outerjoin(Tenants, Tenants.tenant_id == Maintenance.tenant_id)
+        .outerjoin(Vendors, Vendors.vendor_id == Maintenance.vendor_id)
+        .outerjoin(
+            PropertyExpenses, PropertyExpenses.request_id == Maintenance.request_id
+        )
+        .filter(Maintenance.unit_id == unit_id)
         .all()
     )
