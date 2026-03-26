@@ -296,3 +296,28 @@ def get_unit_maintenance(unit_id: int) -> list[Maintenance]:
         .filter(Maintenance.unit_id == unit_id)
         .all()
     )
+
+
+def get_unit_transactions(unit_id: int) -> list[Charges]:
+    return (
+        db.session.query(
+            Charges.charge_id,
+            Charges.charge_type,
+            Charges.amount,
+            Charges.due_date,
+            Charges.status,
+            Application.payment_id,
+            func.sum(Payments.payment_amount).label("total_payment_amount"),
+        )
+        .outerjoin(Application, Charges.charge_id == Application.charge_id)
+        .outerjoin(Payments, Application.payment_id == Payments.payment_id)
+        .join(Lease, Charges.lease_id == Lease.lease_id)
+        .group_by(
+            Charges.charge_id,
+            Charges.charge_type,
+            Charges.amount,
+            Charges.due_date,
+            Charges.status,
+            Application.payment_id,
+        )
+    )

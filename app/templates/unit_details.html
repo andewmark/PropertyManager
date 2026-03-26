@@ -205,10 +205,10 @@
       Maintenance
     </a>
 
-    <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='payments') }}#table"
+    <a href="{{ url_for('unit.unit_detail', unit_id=unit.unit_id, tab='transactions') }}#table"
       class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
-      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'payments' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
-      Payments
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'transactions' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Transactions
     </a>
 
   </div>
@@ -219,6 +219,8 @@
     {% include 'partials/documents_table.html' %}
   {% elif tab == 'maintenance' %}
     {% include 'partials/maintenance_table.html' %}
+  {% elif tab == 'transactions' %}
+    {% include 'partials/transactions_table.html' %}
 
   {% endif %}
   {% endblock %}

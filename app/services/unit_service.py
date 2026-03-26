@@ -12,6 +12,7 @@ from app.repositories.unit_repo import (
     get_tenants_information_by_unit,
     get_unit_documents,
     get_unit_maintenance,
+    get_unit_transactions,
 )
 from app.repositories.lease_repo import get_lease_by_id
 from app.utils.breadcrumbs import generate_breadcrumbs
@@ -104,6 +105,7 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
     leases = []
     documents = []
     maintenance = []
+    transactions = []
 
     if tab == "leases":
         raw_leases = get_tenants_information_by_unit(unit_id)
@@ -121,6 +123,8 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
         documents = get_unit_documents(unit_id)
     elif tab == "maintenance":
         maintenance = get_unit_maintenance(unit_id)
+    elif tab == "transactions":
+        transactions = get_unit_transactions(unit_id)
 
     return {
         "unit": unit_obj,
@@ -138,4 +142,5 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
         "leases": leases,
         "documents": documents,
         "maintenance": maintenance,
+        "transactions": transactions,
     }
