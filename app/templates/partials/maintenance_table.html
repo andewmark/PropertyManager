@@ -1,0 +1,56 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'leases' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Request ID
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Date Requested
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Priority
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Status
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Tenant
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Vendor
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Expense Amount
+          </th>
+        </tr>
+      </thead>
+        {% for row in maintenance %}
+          <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+            <td class="py-3 text-left text-sm">
+              {{ row.request_id }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.date_requested }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.priority }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.status }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.tenant_name if row.tenant_id else "-" }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.vendor_name if row.vendor_id else "-" }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ row.expense_amount if row.expense_id else "-" }}
+            </td>
+          </tr>
+        {% endfor %}
+    </table>
+</div>

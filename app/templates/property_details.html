@@ -60,12 +60,6 @@
 
     <div class="flex items-center gap-1">
       {% if is_under_collected %}
-        <p class="text-md text-red-600">
-          ${{
-            rent_due - rent_collected
-          }} Remaining to be Collected
-        </p>
-
         <span
           class="inline-flex items-center justify-center"
           role="img"
@@ -76,6 +70,11 @@
             class="fa-solid fa-circle-exclamation text-red-600 text-md"
           ></i>
         </span>
+        <p class="text-md text-red-600">
+          ${{
+            rent_due - rent_collected
+          }} Remaining to be Collected
+        </p>
       {% endif %}
     </div>
 

@@ -1,0 +1,57 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'leases' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            File Name
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Type
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Associated Lease
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Associated Tenant
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Uploaded Date
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Uploaded By
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Actions
+          </th>
+        </tr>
+      </thead>
+
+      {% for row in documents %}
+        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+          <td class="py-3 text-left text-sm">
+              {{ row.Documents.stored_filename }}
+          </td>
+          <td class="py-3 text-left text-sm">
+            {{ row.document_type }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.Documents.lease_id if row.Documents.lease_id else "-" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ (row.family_name ~ ', ' ~ row.first_name ~ ' ' ~ row.middle_name) if row.family_name else "-" }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ row.Documents.uploaded_at }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              -
+          </td>
+          <td class="py-3 text-left text-sm">
+              -
+          </td>
+      </tr>
+      {% endfor %}
+    </table>
+</div>

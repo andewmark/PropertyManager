@@ -1,11 +1,13 @@
 from sqlalchemy.orm import aliased
 from sqlalchemy import func, distinct, and_
+from sqlalchemy.engine import Row
+from typing import Optional
 
 from app.extensions import db
 from app.models import Property, Building, Unit, Address
 
 
-def fetch_properties_with_summary():
+def fetch_properties_with_summary() -> list[Row]:
     """
     Returns:
         List of rows containing:
@@ -66,5 +68,5 @@ def fetch_properties_with_summary():
     )
 
 
-def get_property_by_id(property_id):
+def get_property_by_id(property_id: int) -> Optional[Property]:
     return Property.query.get(property_id)

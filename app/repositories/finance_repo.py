@@ -1,10 +1,14 @@
 from sqlalchemy import func
+from datetime import date
+from decimal import Decimal
 
 from app.extensions import db
 from app.models import Application, Charges, Lease, Unit, Building
 
 
-def get_rent_collected_by_property(first_day, next_month, property_id):
+def get_rent_collected_by_property(
+    first_day: date, next_month: date, property_id: int
+) -> Decimal | None:
     """
     Gets all charges and applicable payment applications to retrieve sum
     of rent collected for the specified property within the given period.
@@ -29,7 +33,9 @@ def get_rent_collected_by_property(first_day, next_month, property_id):
     )
 
 
-def get_rent_collected_by_building(first_day, next_month, building_id):
+def get_rent_collected_by_building(
+    first_day: date, next_month: date, building_id: int
+) -> Decimal | None:
     """
     Gets all charges and applicable payment applications to retrieve sum
     of rent collected for the specified building within the given period.
@@ -53,7 +59,9 @@ def get_rent_collected_by_building(first_day, next_month, building_id):
     )
 
 
-def get_rent_due_by_property(first_day, next_month, property_id):
+def get_rent_due_by_property(
+    first_day: date, next_month: date, property_id: int
+) -> Decimal | None:
     """
     Gets all rent due for specified property within the given period
 
@@ -76,7 +84,9 @@ def get_rent_due_by_property(first_day, next_month, property_id):
     )
 
 
-def get_rent_due_by_building(first_day, next_month, building_id):
+def get_rent_due_by_building(
+    first_day: date, next_month: date, building_id: int
+) -> Decimal | None:
     """
     Gets all rent due for specified property within the given period
 
@@ -98,7 +108,9 @@ def get_rent_due_by_building(first_day, next_month, building_id):
     )
 
 
-def get_property_next_rent_due_date(first_day, next_month, property_id):
+def get_property_next_rent_due_date(
+    first_day: date, next_month: date, property_id: int
+) -> Decimal | None:
     return (
         db.session.query(Charges.due_date)
         .join(Lease, Charges.lease_id == Lease.lease_id)
@@ -116,7 +128,9 @@ def get_property_next_rent_due_date(first_day, next_month, property_id):
     )
 
 
-def get_building_next_rent_due_date(first_day, next_month, building_id):
+def get_building_next_rent_due_date(
+    first_day: date, next_month: date, building_id: int
+) -> Decimal | None:
     return (
         db.session.query(Charges.due_date)
         .join(Lease, Charges.lease_id == Lease.lease_id)
@@ -133,7 +147,13 @@ def get_building_next_rent_due_date(first_day, next_month, building_id):
     )
 
 
-def get_total_outstanding_for_property(today, property_id):
+def get_total_outstanding_for_property(today: date, property_id: int) -> Decimal | None:
+    """
+    Gets outstanding balance for the given property passed in
+
+    :param today: Today
+    :param property_id: Property
+    """
     applied_subq = (
         db.session.query(
             Application.charge_id.label("charge_id"),
@@ -165,7 +185,7 @@ def get_total_outstanding_for_property(today, property_id):
     )
 
 
-def get_total_outstanding_for_building(today, building_id):
+def get_total_outstanding_for_building(today: date, building_id: int) -> Decimal | None:
     applied_subq = (
         db.session.query(
             Application.charge_id.label("charge_id"),

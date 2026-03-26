@@ -1,12 +1,30 @@
 from datetime import date
+from decimal import Decimal
 
 from sqlalchemy import distinct, func
 
 from app.extensions import db
-from app.models import Building, Unit, Lease, Tenants, Application, Charges
+from app.models import (
+    Building,
+    Unit,
+    Lease,
+    Tenants,
+    Application,
+    Charges,
+    Payments,
+    PropertyExpenses,
+    Amenities,
+    UnitAmenities,
+    Utilities,
+    UnitUtilities,
+    Documents,
+    DocumentTypes,
+    Maintenance,
+    Vendors,
+)
 
 
-def get_occupied_unit_count(property_id):
+def get_occupied_unit_count(property_id: int) -> int:
     return (
         db.session.query(distinct(Unit.unit_id))
         .join(Lease)
@@ -19,7 +37,7 @@ def get_occupied_unit_count(property_id):
     )
 
 
-def get_total_unit_count(property_id):
+def get_total_unit_count(property_id: int) -> int:
     return (
         db.session.query(Unit.unit_id)
         .join(Building)
@@ -28,11 +46,20 @@ def get_total_unit_count(property_id):
     )
 
 
-def get_unit_by_id(unit_id):
+def get_unit_by_id(unit_id: int) -> Unit:
     return Unit.query.get(unit_id)
 
 
-def get_occupied_unit_ids(unit_ids):
+def get_occupied_unit_ids(unit_ids: list[int]) -> set[int]:
+    """
+    Get Occupied units by unit_id based on if they have an acitve lease
+
+    Args:
+        unit_ids (Arr[Ints]): List of unit_ids
+
+    Returns:
+        set[int]: occupied unit ids
+    """
     return {
         row.unit_id
         for row in (
@@ -47,7 +74,16 @@ def get_occupied_unit_ids(unit_ids):
     }
 
 
-def get_current_tennants_by_unit_ids(unit_ids):
+def get_current_tennants_by_unit_ids(unit_ids: list[int]) -> dict[int, list[Tenants]]:
+    """
+    Get current tenants given a list of unit ids
+
+    Args:
+        unit_ids (Arr[Ints]): List of unit_ids
+
+    Returns:
+        dict - {unit_id: [tenants]}: mapping of units to active tenants
+    """
     rows = (
         db.session.query(Lease.unit_id, Tenants)
         .join(Tenants, Tenants.tenant_id == Lease.tenant_id)
@@ -66,7 +102,52 @@ def get_current_tennants_by_unit_ids(unit_ids):
     return tenants_by_unit
 
 
-def get_current_rent_by_unit_ids(unit_ids):
+def get_tenants_information_by_unit(unit_id: int) -> list[tuple[Tenants, Lease]]:
+    """
+    returns a list of tenant information
+
+    Args:
+        unit_id: int - unit id to be filtered
+
+    Returns:
+        list[tuple[Tenant, Lease]]: list of tenant information from specified unit
+    """
+    return (
+        db.session.query(Tenants, Lease)
+        .join(Lease, Tenants.tenant_id == Lease.tenant_id)
+        .filter(Lease.unit_id == unit_id)
+        .all()
+    )
+
+
+def get_unit_documents(unit_id: int) -> list[tuple[Documents, str, str, str, str]]:
+    """
+    returns a list of Document Information
+
+    Args:
+        unit_id: int - unit id to be filtered
+    Returns:
+        list[tuple[Documents, str, str, str, str]]: list of Document Information specified unit
+    """
+    return (
+        db.session.query(
+            Documents,
+            DocumentTypes.document_type,
+            Tenants.first_name,
+            Tenants.middle_name,
+            Tenants.family_name,
+        )
+        .outerjoin(Lease, Documents.lease_id == Lease.lease_id)
+        .outerjoin(Tenants, Lease.tenant_id == Tenants.tenant_id)
+        .join(
+            DocumentTypes, DocumentTypes.document_type_id == Documents.document_type_id
+        )
+        .filter(Documents.unit_id == unit_id)
+        .all()
+    )
+
+
+def get_current_rent_by_unit_ids(unit_ids: list[int]) -> dict[int, Decimal]:
     today = date.today()
 
     active_lease_rent_subq = (
@@ -90,14 +171,14 @@ def get_current_rent_by_unit_ids(unit_ids):
         .outerjoin(
             active_lease_rent_subq, active_lease_rent_subq.c.unit_id == Unit.unit_id
         )
-        .filter(Unit.unit_id.in_(unit_ids))
+        .filter(Unit.unit_id.in_(unit_ids))  # type: ignore
         .all()
     )
 
     return {row.unit_id: row.rent_amount for row in rows}
 
 
-def get_outstanding_by_unit_ids(unit_ids):
+def get_outstanding_by_unit_ids(unit_ids: list[int]) -> dict[int, Decimal]:
     today = date.today()
 
     applied_subq = (
@@ -131,3 +212,112 @@ def get_outstanding_by_unit_ids(unit_ids):
     )
 
     return {row.unit_id: row.outstanding_amount for row in rows}
+
+
+def get_current_lease_by_unit_id(unit_id: int) -> list[Lease]:
+    today = date.today()
+
+    return (
+        db.session.query(Lease)
+        .filter(Lease.unit_id == unit_id)
+        .filter(Lease.start_date <= today)
+        .filter(Lease.end_date > today)
+        .filter(Lease.move_out_date.is_(None))
+        .all()
+    )
+
+
+def get_unit_YTD_payments(unit_id: int) -> Decimal:
+    year = date(date.today().year, 1, 1)
+
+    return (
+        db.session.query(func.sum(Payments.payment_amount))
+        .join(Lease, Lease.lease_id == Payments.lease_id)
+        .join(Unit, Unit.unit_id == Lease.unit_id)
+        .filter(Unit.unit_id == unit_id)
+        .filter(
+            Payments.payment_status == "Completed"
+        )  # TODO: Don't include String Literals
+        .filter(Payments.payment_date >= year)
+        .scalar()
+    )
+
+
+def get_unit_YTD_expenses(unit_id: int) -> Decimal:
+    year = date(date.today().year, 1, 1)
+
+    return (
+        db.session.query(func.sum(PropertyExpenses.expense_amount))
+        .filter(Unit.unit_id == unit_id)
+        .filter(PropertyExpenses.date_incurred >= year)
+        .scalar()
+    )
+
+
+def get_unit_amenities(unit_id: int) -> list[Amenities]:
+    return (
+        db.session.query(Amenities.amenity_name)
+        .join(UnitAmenities, UnitAmenities.amenity_id == Amenities.amenity_id)
+        .filter(UnitAmenities.unit_id == unit_id)
+        .all()
+    )
+
+
+def get_unit_utlities(unit_id: int) -> list[Utilities]:
+    return (
+        db.session.query(Utilities.utility_name)
+        .join(UnitUtilities, UnitUtilities.utility_id == Utilities.utility_id)
+        .filter(UnitUtilities.unit_id == unit_id)
+        .all()
+    )
+
+
+def get_unit_maintenance(unit_id: int) -> list[Maintenance]:
+    return (
+        db.session.query(
+            Maintenance.request_id,
+            Maintenance.date_requested,
+            Maintenance.priority,
+            Maintenance.status,
+            Tenants.tenant_id,
+            func.concat(
+                Tenants.family_name, ", ", Tenants.first_name, " ", Tenants.middle_name
+            ).label("tenant_name"),
+            Vendors.vendor_id,
+            Vendors.vendor_name,
+            PropertyExpenses.expense_id,
+            PropertyExpenses.expense_amount,
+        )
+        .outerjoin(Tenants, Tenants.tenant_id == Maintenance.tenant_id)
+        .outerjoin(Vendors, Vendors.vendor_id == Maintenance.vendor_id)
+        .outerjoin(
+            PropertyExpenses, PropertyExpenses.request_id == Maintenance.request_id
+        )
+        .filter(Maintenance.unit_id == unit_id)
+        .all()
+    )
+
+
+def get_unit_transactions(unit_id: int) -> list[Charges]:
+    return (
+        db.session.query(
+            Charges.charge_id,
+            Charges.charge_type,
+            Charges.amount,
+            Charges.due_date,
+            Charges.status,
+            Application.payment_id,
+            func.sum(Payments.payment_amount).label("total_payment_amount"),
+        )
+        .outerjoin(Application, Charges.charge_id == Application.charge_id)
+        .outerjoin(Payments, Application.payment_id == Payments.payment_id)
+        .join(Lease, Charges.lease_id == Lease.lease_id)
+        .group_by(
+            Charges.charge_id,
+            Charges.charge_type,
+            Charges.amount,
+            Charges.due_date,
+            Charges.status,
+            Application.payment_id,
+        )
+    )

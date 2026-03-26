@@ -1,12 +1,17 @@
+from __future__ import annotations
+
 from app.extensions import db
+from sqlalchemy.orm import Mapped
+
+from decimal import Decimal
 
 
 class Property(db.Model):
     __tablename__ = "tbl_property"
 
-    property_id = db.Column(db.Integer, primary_key=True)
-    property_name = db.Column(db.String(100), nullable=False)
-    multi_unit = db.Column(db.Boolean, nullable=False)
+    property_id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    property_name: Mapped[str] = db.Column(db.String(100), nullable=False)
+    multi_unit: Mapped[bool] = db.Column(db.Boolean, nullable=False)
 
     buildings = db.relationship(
         "Building", back_populates="property", cascade="all, delete-orphan"
@@ -28,13 +33,13 @@ class Property(db.Model):
 class Address(db.Model):
     __tablename__ = "tbl_address"
 
-    address_id = db.Column(db.Integer, primary_key=True)
-    street_number = db.Column(db.String(10), nullable=False)
-    city = db.Column(db.String(200), nullable=False)
-    state = db.Column(db.String(50), nullable=True)
-    postal_code = db.Column(db.String(10), nullable=False)
-    country = db.Column(db.String(50), nullable=False)
-    street = db.Column(db.String(500), nullable=False)
+    address_id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    street_number: Mapped[str] = db.Column(db.String(10), nullable=False)
+    city: Mapped[str] = db.Column(db.String(200), nullable=False)
+    state: Mapped[str | None] = db.Column(db.String(50), nullable=True)
+    postal_code: Mapped[str] = db.Column(db.String(10), nullable=False)
+    country: Mapped[str] = db.Column(db.String(50), nullable=False)
+    street: Mapped[str] = db.Column(db.String(500), nullable=False)
 
     buildings = db.relationship("Building", back_populates="address")
 
@@ -42,8 +47,8 @@ class Address(db.Model):
 class BuildingType(db.Model):
     __tablename__ = "tbl_building_type"
 
-    building_type_id = db.Column(db.Integer, primary_key=True)
-    building_type = db.Column(db.String(50), nullable=False)
+    building_type_id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    building_type: Mapped[str] = db.Column(db.String(50), nullable=False)
 
     buildings = db.relationship("Building", back_populates="building_type")
 
@@ -51,18 +56,18 @@ class BuildingType(db.Model):
 class Building(db.Model):
     __tablename__ = "tbl_building"
 
-    building_id = db.Column(db.Integer, primary_key=True)
-    property_id = db.Column(
+    building_id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    property_id: Mapped[int] = db.Column(
         db.Integer, db.ForeignKey("tbl_property.property_id"), nullable=False
     )
-    address_id = db.Column(
+    address_id: Mapped[int] = db.Column(
         db.Integer, db.ForeignKey("tbl_address.address_id"), nullable=False
     )
-    building_name = db.Column(db.String(150), nullable=False)
-    building_type_id = db.Column(
+    building_name: Mapped[str] = db.Column(db.String(150), nullable=False)
+    building_type_id: Mapped[int] = db.Column(
         db.Integer, db.ForeignKey("tbl_building_type.building_type_id"), nullable=False
     )
-    is_main_building = db.Column(db.Boolean, default=False, nullable=False)
+    is_main_building: Mapped[int] = db.Column(db.Boolean, default=False, nullable=False)
 
     property = db.relationship("Property", back_populates="buildings")
     address = db.relationship("Address", back_populates="buildings")
@@ -85,15 +90,15 @@ class Building(db.Model):
 class Unit(db.Model):
     __tablename__ = "tbl_units"
 
-    unit_id = db.Column(db.Integer, primary_key=True)
-    building_id = db.Column(
+    unit_id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    building_id: Mapped[int] = db.Column(
         db.Integer, db.ForeignKey("tbl_building.building_id"), nullable=False
     )
-    unit_number = db.Column(db.String(15), nullable=True)
-    square_feet = db.Column(db.Integer, nullable=False)
-    beds = db.Column(db.Integer, nullable=False)
-    baths = db.Column(db.Integer, nullable=False)
-    market_rent = db.Column(db.Numeric(10, 2), nullable=False)
+    unit_number: Mapped[str | None] = db.Column(db.String(15), nullable=True)
+    square_feet: Mapped[str] = db.Column(db.Integer, nullable=False)
+    beds: Mapped[int] = db.Column(db.Integer, nullable=False)
+    baths: Mapped[int] = db.Column(db.Integer, nullable=False)
+    market_rent: Mapped[Decimal] = db.Column(db.Numeric(10, 2), nullable=False)
 
     building = db.relationship("Building", back_populates="units")
 
@@ -114,6 +119,12 @@ class Unit(db.Model):
     )
     property_expense = db.relationship(
         "PropertyExpenses", back_populates="unit", cascade="all, delete-orphan"
+    )
+    unit_amenities = db.relationship(
+        "UnitAmenities", back_populates="unit", cascade="all, delete-orphan"
+    )
+    unit_utilities = db.relationship(
+        "UnitUtilities", back_populates="unit", cascade="all, delete-orphan"
     )
 
 
@@ -139,6 +150,9 @@ class Lease(db.Model):
     )
     charge = db.relationship(
         "Charges", back_populates="lease", cascade="all, delete-orphan"
+    )
+    documents = db.relationship(
+        "Documents", back_populates="lease", cascade="all, delete-orphan"
     )
 
 
@@ -266,6 +280,9 @@ class Maintenance(db.Model):
     documents = db.relationship(
         "Documents", back_populates="maintenance", cascade="all, delete-orphan"
     )
+    property_expense = db.relationship(
+        "PropertyExpenses", back_populates="maintenance", cascade="all, delete-orphan"
+    )
 
 
 class ExpenseCategory(db.Model):
@@ -366,19 +383,35 @@ class Documents(db.Model):
     request_id = db.Column(
         db.Integer, db.ForeignKey("tbl_maintenance.request_id"), nullable=True
     )
+    document_type_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_document_types.document_type_id")
+    )
+    lease_id = db.Column(db.Integer, db.ForeignKey("tbl_lease.lease_id"), nullable=True)
     filepath = db.Column(db.String(1000), nullable=False)
     stored_filename = db.Column(db.String(1000), nullable=False)
     original_filename = db.Column(db.String(1000), nullable=False)
-    file_type = db.Column(db.String(15), nullable=False)
     file_size = db.Column(db.String(15), nullable=False)
     storage_location = db.Column(db.String(1000), nullable=False)
     uploaded_at = db.Column(db.Date, nullable=False)
-    lease_id = db.Column(db.Integer, db.ForeignKey("tbl_lease.lease_id"), nullable=True)
 
     property = db.relationship("Property", back_populates="documents")
     unit = db.relationship("Unit", back_populates="documents")
     maintenance = db.relationship("Maintenance", back_populates="documents")
     property_expense = db.relationship("PropertyExpenses", back_populates="documents")
+    lease = db.relationship("Lease", back_populates="documents")
+    document_type = db.relationship("DocumentTypes", back_populates="documents")
+
+
+class DocumentTypes(db.Model):
+    __tablename__ = "tbl_document_types"
+
+    document_type_id = db.Column(db.Integer, primary_key=True)
+    document_type = db.Column(db.String(50), nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+
+    documents = db.relationship(
+        "Documents", back_populates="document_type", cascade="all, delete-orphan"
+    )
 
 
 class PropertyExpenses(db.Model):
@@ -406,6 +439,7 @@ class PropertyExpenses(db.Model):
         db.ForeignKey("tbl_recurring_expenses.recurring_rule_id"),
         nullable=True,
     )
+    request_id = db.Column(db.Integer, db.ForeignKey("tbl_maintenance"))
 
     property = db.relationship("Property", back_populates="property_expense")
     building = db.relationship("Building", back_populates="property_expense")
@@ -417,7 +451,57 @@ class PropertyExpenses(db.Model):
     recurring_expenses = db.relationship(
         "RecurringExpenses", back_populates="property_expense"
     )
-
+    maintenance = db.relationship("Maintenance", back_populates="property_expense")
     documents = db.relationship(
         "Documents", back_populates="property_expense", cascade="all, delete-orphan"
     )
+
+
+class Amenities(db.Model):
+    __tablename__ = "tbl_amenities"
+
+    amenity_id = db.Column(db.Integer, primary_key=True)
+    amenity_name = db.Column(db.String(100), nullable=False)
+
+    unit_amenities = db.relationship(
+        "UnitAmenities", back_populates="amenities", cascade="all, delete-orphan"
+    )
+
+
+class UnitAmenities(db.Model):
+    __tablename__ = "tbl_unit_amenities"
+
+    unit_id = db.Column(db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False)
+    amenity_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_amenities.amenity_id"), nullable=False
+    )
+
+    __table_args__ = (db.PrimaryKeyConstraint("unit_id", "amenity_id"),)
+
+    unit = db.relationship("Unit", back_populates="unit_amenities")
+    amenities = db.relationship("Amenities", back_populates="unit_amenities")
+
+
+class Utilities(db.Model):
+    __tablename__ = "tbl_utilities"
+
+    utility_id = db.Column(db.Integer, primary_key=True)
+    utility_name = db.Column(db.String(100), nullable=False)
+
+    unit_utilities = db.relationship(
+        "UnitUtilities", back_populates="utilities", cascade="all, delete-orphan"
+    )
+
+
+class UnitUtilities(db.Model):
+    __tablename__ = "tbl_unit_utilities"
+
+    unit_id = db.Column(db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=False)
+    utility_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_utilities.utility_id"), nullable=False
+    )
+
+    __table_args__ = (db.PrimaryKeyConstraint("unit_id", "utility_id"),)
+
+    unit = db.relationship("Unit", back_populates="unit_utilities")
+    utilities = db.relationship("Utilities", back_populates="unit_utilities")
