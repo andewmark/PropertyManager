@@ -25,24 +25,24 @@
         </tr>
       </thead>
 
-      {% for item in units %}
+      {% for unit in units %}
         <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
             <td class="py-3 text-left text-sm">
-                <a href="/units/{{ item.unit.unit_id }}"
+                <a href="/units/{{ unit.unit.unit_id }}"
                 class="text-md text-blue-600 hover:underline">
-                    {{ item.unit.unit_number }}
+                    {{ unit.unit.unit_number }}
                 </a>
             </td>
             <td class="py-3 text-left text-sm">
                 <div>
-                    {% if item.is_occupied %}
-                    <span class="w-fit bg-green-200 text-green-800 text-md font-semibold px-3 py-1 rounded-full flex items-center gap-2"
+                    {% if unit.is_occupied %}
+                    <span class="w-fit bg-green-200 text-green-800 text-md font-semibold px-3 py-1 rounded-full flex units-center gap-2"
                         aria-label="Unit Occupied">
                         <h4 class="m-0">Occupied</h4>
                         <i class="fa-regular fa-circle-check"></i>
                     </span>
                     {% else %}
-                    <span class="w-fit bg-red-200 text-red-800 text-md font-semibold px-3 py-1 rounded-full flex items-center gap-2"
+                    <span class="w-fit bg-red-200 text-red-800 text-md font-semibold px-3 py-1 rounded-full flex units-center gap-2"
                         aria-label="Unit Vacant">
                         <h4 class="m-0">Vacant</h4>
                         <i class="fa-regular fa-circle-xmark"></i>
@@ -51,9 +51,9 @@
                 </div>
             </td>
             <td class="py-3 text-left text-sm">
-                {% if item.tenants %}
+                {% if unit.tenants %}
                     <ul class="space-y-1">
-                    {% for tenant in item.tenants %}
+                    {% for tenant in unit.tenants %}
                     <li>
                         <!--TODO: Create Tenants Detail Page-->
                         <a href="/"
@@ -68,11 +68,11 @@
                 {% endif %}
             </td>
             <td class="py-3 text-left text-sm">
-                ${{ item.current_rent }}
+                ${{ unit.current_rent }}
             </td>
             <td class="py-3 text-left text-sm">
-                {% if item.outstanding_balance %}
-                    ${{ item.outstanding_balance }}
+                {% if unit.outstanding_balance %}
+                    ${{ unit.outstanding_balance }}
                 {% else %}
                     $0.00
                 {% endif %}
