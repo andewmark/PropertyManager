@@ -85,6 +85,9 @@ class Building(db.Model):
     property_expense = db.relationship(
         "PropertyExpenses", back_populates="building", cascade="all, delete-orphan"
     )
+    maintenance = db.relationship(
+        "Maintenance", back_populates="building", cascade="all, delete-orphan"
+    )
 
 
 class Unit(db.Model):
@@ -259,8 +262,11 @@ class Vendors(db.Model):
 class Maintenance(db.Model):
     __tablename__ = "tbl_maintenance"
 
-    request_id = db.Column(db.Integer, primary_key=True)
+    maintenance_id = db.Column(db.Integer, primary_key=True)
     unit_id = db.Column(db.Integer, db.ForeignKey("tbl_units.unit_id"), nullable=True)
+    building_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_building.building_id"), nullable=False
+    )
     tenant_id = db.Column(
         db.Integer, db.ForeignKey("tbl_tenants.tenant_id"), nullable=True
     )
@@ -276,6 +282,7 @@ class Maintenance(db.Model):
     vendor = db.relationship("Vendors", back_populates="maintenance")
     tenant = db.relationship("Tenants", back_populates="maintenance")
     unit = db.relationship("Unit", back_populates="maintenance")
+    building = db.relationship("Building", back_populates="maintenance")
 
     documents = db.relationship(
         "Documents", back_populates="maintenance", cascade="all, delete-orphan"
@@ -380,8 +387,8 @@ class Documents(db.Model):
     expense_id = db.Column(
         db.Integer, db.ForeignKey("tbl_property_expenses.expense_id")
     )
-    request_id = db.Column(
-        db.Integer, db.ForeignKey("tbl_maintenance.request_id"), nullable=True
+    maintenance_id = db.Column(
+        db.Integer, db.ForeignKey("tbl_maintenance.maintenance_id"), nullable=True
     )
     document_type_id = db.Column(
         db.Integer, db.ForeignKey("tbl_document_types.document_type_id")
@@ -439,7 +446,7 @@ class PropertyExpenses(db.Model):
         db.ForeignKey("tbl_recurring_expenses.recurring_rule_id"),
         nullable=True,
     )
-    request_id = db.Column(db.Integer, db.ForeignKey("tbl_maintenance"))
+    maintenance_id = db.Column(db.Integer, db.ForeignKey("tbl_maintenance"))
 
     property = db.relationship("Property", back_populates="property_expense")
     building = db.relationship("Building", back_populates="property_expense")

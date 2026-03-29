@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, abort, request
 from app.services.unit_service import get_unit_dashboard
 
 unit_bp = Blueprint("unit", __name__)
@@ -9,6 +9,9 @@ def unit_detail(unit_id):
     tab = request.args.get("tab", "leases")
 
     data = get_unit_dashboard(unit_id, tab)
+
+    if not data:
+        abort(404)
 
     return render_template(
         "unit_details.html", **data, page_title=f"Unit {data['unit'].unit_number}"

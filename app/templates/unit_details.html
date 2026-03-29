@@ -214,13 +214,13 @@
   </div>
 
   {% if tab == 'leases' %}
-    {% include 'partials/lease_table.html' %}
+    {% include 'unit_partials/lease_table.html' %}
   {% elif tab == 'documents' %}
-    {% include 'partials/documents_table.html' %}
+    {% include 'unit_partials/documents_table.html' %}
   {% elif tab == 'maintenance' %}
-    {% include 'partials/maintenance_table.html' %}
+    {% include 'unit_partials/maintenance_table.html' %}
   {% elif tab == 'transactions' %}
-    {% include 'partials/transactions_table.html' %}
+    {% include 'unit_partials/transactions_table.html' %}
 
   {% endif %}
   {% endblock %}

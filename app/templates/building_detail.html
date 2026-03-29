@@ -34,11 +34,11 @@
 </div>
 
 <!--Overview Summary-->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
 
   <!--Occupany Rate Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">Occupany Rate</h3>
+    <h3 class="text-gray-500 text-md mb-2">Occupany rate</h3>
     <p class="text-2xl font-bold text-gray-800">{{ occupancy_rate }}%</p>
     <p class="text-gray-500 text-sm">{{ unit_occupied_count }} of {{total_units}} units occupied</p>
   </div>
@@ -46,7 +46,7 @@
   <!--Rent Collected Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
     <h3 class="text-gray-500 text-md mb-2">
-      Rent Collected (This Month)
+      Rent collected (this month)
     </h3>
 
     <div class="flex items-center gap-1">
@@ -87,11 +87,32 @@
   <!--Outstanding Tenants Balance Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
     <h3 class="text-gray-500 text-md mb-2">
-      Outstanding Tenants Balance
+      Outstanding balance
     </h3>
 
     <p class="text-2xl font-bold text-black-600">
       ${{ total_outstanding }}
+    </p>
+    
+    <!--TODO: Link button to page with filtered report-->
+    <div class="flex items-center gap-2 cursor-pointer">
+      {% if total_outstanding > 0 %}
+        <a href='https://alexlevydesigner.com/' target="_blank" class="text-md text-blue-500 hover:underline">
+          View tenants with outstanding balances
+        </a>
+        <i class="fa-solid fa-arrow-right text-blue-500"></i>
+      {% endif %}
+    </div>
+  </div>
+
+  <!--Open Work Orders-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    <h3 class="text-gray-500 text-md mb-2">
+      Open work orders
+    </h3>
+
+    <p class="text-2xl font-bold text-black-600">
+      {{ open_maintenance }}
     </p>
     
     <!--TODO: Link button to page with filtered report-->
@@ -217,6 +238,37 @@
     {% endfor %}
 
   </table>
+</div>
+
+<!--Tabs-->
+<div class="overflow-x-auto min-w-0 mt-6">
+  <div id='table' class="flex whitespace-nowrap space-x-1">
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='units') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'units' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Units
+    </a>
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='documents') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'documents' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Documents
+    </a>
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='maintenance') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'maintenance' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Maintenance
+    </a>
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='transactions') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'transactions' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Transactions
+    </a>
+
+  </div>
 </div>
 
 {% endblock %}
