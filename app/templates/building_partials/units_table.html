@@ -1,0 +1,89 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'units' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Unit
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Status
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Tenant(s)
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Rent
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Balance
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Flags
+          </th>
+        </tr>
+      </thead>
+
+      {% for item in units %}
+        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+            <td class="py-3 text-left text-sm">
+                <a href="/units/{{ item.unit.unit_id }}"
+                class="text-md text-blue-600 hover:underline">
+                    {{ item.unit.unit_number }}
+                </a>
+            </td>
+            <td class="py-3 text-left text-sm">
+                <div>
+                    {% if item.is_occupied %}
+                    <span class="w-fit bg-green-200 text-green-800 text-md font-semibold px-3 py-1 rounded-full flex items-center gap-2"
+                        aria-label="Unit Occupied">
+                        <h4 class="m-0">Occupied</h4>
+                        <i class="fa-regular fa-circle-check"></i>
+                    </span>
+                    {% else %}
+                    <span class="w-fit bg-red-200 text-red-800 text-md font-semibold px-3 py-1 rounded-full flex items-center gap-2"
+                        aria-label="Unit Vacant">
+                        <h4 class="m-0">Vacant</h4>
+                        <i class="fa-regular fa-circle-xmark"></i>
+                    </span>
+                    {% endif %}
+                </div>
+            </td>
+            <td class="py-3 text-left text-sm">
+                {% if item.tenants %}
+                    <ul class="space-y-1">
+                    {% for tenant in item.tenants %}
+                    <li>
+                        <!--TODO: Create Tenants Detail Page-->
+                        <a href="/"
+                        class="text-md text-blue-600 hover:underline">
+                        {{ tenant.first_name }} {{ tenant.family_name}}
+                        </a>
+                    </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <span class="text-gray-400 italic">—</span>
+                {% endif %}
+            </td>
+            <td class="py-3 text-left text-sm">
+                ${{ item.current_rent }}
+            </td>
+            <td class="py-3 text-left text-sm">
+                {% if item.outstanding_balance %}
+                    ${{ item.outstanding_balance }}
+                {% else %}
+                    $0.00
+                {% endif %}
+            </td>
+            <td class="py-3 text-left text-sm">
+                
+            </td>
+            <td class="py-3 text-left text-sm">
+                
+            </td>
+        </tr>
+      {% endfor %}
+    </table>
+</div>

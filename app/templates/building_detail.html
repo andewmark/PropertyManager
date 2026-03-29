@@ -36,16 +36,16 @@
 <!--Overview Summary-->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
 
-  <!--Occupany Rate Panel-->
+  <!--Occupancy Rate Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">Occupany rate</h3>
+    <h3 class="text-gray-500 text-md">Occupancy rate</h3>
     <p class="text-2xl font-bold text-gray-800">{{ occupancy_rate }}%</p>
     <p class="text-gray-500 text-sm">{{ unit_occupied_count }} of {{total_units}} units occupied</p>
   </div>
 
   <!--Rent Collected Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">
+    <h3 class="text-gray-500 text-md">
       Rent collected (this month)
     </h3>
 
@@ -79,14 +79,20 @@
       {% endif %}
     </div>
 
+    {% if next_rent_due %}
     <p class="text-gray-500 text-sm">
-      Next Rent Due: {{ next_rent_due }}
+      Next due: {{ next_rent_due }}
     </p>
+    {% else %}
+    <p class="text-gray-500 text-sm">
+      No upcoming rent scheduled
+    </p>
+    {% endif %}
   </div>
 
   <!--Outstanding Tenants Balance Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">
+    <h3 class="text-gray-500 text-md">
       Outstanding balance
     </h3>
 
@@ -107,7 +113,7 @@
 
   <!--Open Work Orders-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">
+    <h3 class="text-gray-500 text-md">
       Open work orders
     </h3>
 
@@ -117,7 +123,7 @@
     
     <!--TODO: Link button to page with filtered report-->
     <div class="flex items-center gap-2 cursor-pointer">
-      {% if total_outstanding > 0 %}
+      {% if open_maintenance > 0 %}
         <a href='https://alexlevydesigner.com/' target="_blank" class="text-md text-blue-500 hover:underline">
           View tenants with outstanding balances
         </a>
@@ -126,118 +132,6 @@
     </div>
   </div>
     
-</div>
-
-<!-- Search + Filters Bar -->
-<div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-
-  <!-- Search -->
-  <div class="relative w-full sm:max-w-md">
-    <label for="searchbar" class="sr-only">
-      Search units, tenants, or status
-    </label>
-
-    <!-- Icon -->
-    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
-      <i class="fa-solid fa-magnifying-glass"></i>
-    </span>
-
-    <input
-      type="text"
-      id="searchbar"
-      name="searchbar"
-      placeholder="Search units, tenants, status…"
-      class="w-full rounded-2xl border border-gray-300 bg-white py-2 pl-10 pr-10 text-sm
-             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-             shadow-sm"
-    />
-
-    <!-- Clear button -->
-    <button
-      type="button"
-      id="clear-search"
-      class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600"
-      aria-label="Clear search"
-    >
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-  </div>
-</div>
-
-
-<!--Units Table-->
-<div class="overflow-x-auto rounded-2xl shadow">
-  <table class="w-full table-fixed border-collapse">
-    <thead class="bg-gray-300">
-      <tr>
-        <th class="px-4 py-3 text-left text-md font-semibold text-black">
-          Unit Number
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-black">
-          Occupancy status
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Tenant name(s)
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Rent Amount
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Outstanding Balance
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Status flags
-        </th>
-      </tr>
-    </thead>
-
-    <tbody class="divide-y divide-gray-200">
-      {% for item in units %}
-      <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200 transition-colors">
-        <td class="px-4 py-3 truncate">
-          <a href="/units/{{ item.unit.unit_id }}"
-          class="text-md text-blue-600 hover:underline">
-            {{ item.unit.unit_number }}
-          </a>
-        </td>
-        <td class="px-4 py-3 truncate">
-          {{ item.is_occupied }}
-        </td>
-        <td class="px-4 py-3 truncate">
-          {% if item.tenants %}
-            <ul class="space-y-1">
-              {% for tenant in item.tenants %}
-              <li>
-                <!--TODO: Create Tenants Detail Page-->
-                <a href="/"
-                class="text-md text-blue-600 hover:underline">
-                  {{ tenant.first_name }} {{ tenant.family_name}}
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-          <span class="text-gray-400 italic">—</span>
-          {% endif %}
-        </td>
-        <td class="px-4 py-3 truncate">
-          ${{ item.current_rent }}
-        </td>
-        <td class="px-4 py-3 truncate">
-          {% if item.outstanding_balance %}
-            ${{ item.outstanding_balance }}
-          {% else %}
-            $0.00
-          {% endif %}
-        </td>
-        <td class="px-4 py-3 truncate">
-          
-        </td>
-      </tr>
-    </tbody>
-    {% endfor %}
-
-  </table>
 </div>
 
 <!--Tabs-->
@@ -269,9 +163,20 @@
     </a>
 
   </div>
-</div>
 
-{% endblock %}
+  {% if tab == 'units' %}
+    {% include 'building_partials/units_table.html' %}
+  {% elif tab == 'documents' %}
+    {% include 'building_partials/documents_table.html' %}
+  {% elif tab == 'maintenance' %}
+    {% include 'building_partials/maintenance_table.html' %}
+  {% elif tab == 'transactions' %}
+    {% include 'building_partials/transactions_table.html' %}
+
+  {% endif %}
+  {% endblock %}
+
+</div>
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/search_table.js') }}"></script>
