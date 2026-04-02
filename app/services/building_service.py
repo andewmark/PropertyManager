@@ -7,6 +7,7 @@ from app.repositories.building_repo import (
     get_building_by_id_and_property,
     get_active_building_maintenance,
     get_building_documents,
+    get_building_maintenance,
 )
 from app.repositories.unit_repo import (
     get_occupied_unit_ids,
@@ -64,7 +65,7 @@ def get_building_dashboard(
                 }
             )
     elif tab == "maintenance":
-        maintenance = []
+        maintenance = get_building_maintenance(building_id)
     elif tab == "documents":
         documents = get_building_documents(building_id)
     elif tab == "transactions":

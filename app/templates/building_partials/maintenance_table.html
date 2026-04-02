@@ -1,0 +1,51 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'leases' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Issue
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Unit
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Reported
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Status
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Priority
+          </th>
+        </tr>
+      </thead>
+
+      {% for workItem in maintenance %}
+        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+          <td class="py-3 text-left text-sm">
+            <a href="https://alexlevydesigner.com/"
+            class="text-blue-600 hover:underline">
+              {{ workItem.maintenance_type }}
+            </a>
+          </td>
+          <td class="py-3 text-left text-sm">
+            <a href="{{ url_for('unit.unit_detail', unit_id=workItem.unit_id) }}"
+            class="text-blue-600 hover:underline">
+            {{ workItem.unit_number }}
+            </a>
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ workItem.date_requested }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ workItem.status}}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ workItem.priority }}
+          </td>
+      </tr>
+      {% endfor %}
+    </table>
+</div>

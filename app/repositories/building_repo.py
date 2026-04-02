@@ -1,7 +1,14 @@
 from typing import Optional, Any
 from app.extensions import db
 from sqlalchemy import distinct
-from app.models import Building, Maintenance, Documents, DocumentTypes
+from app.models import (
+    Building,
+    Maintenance,
+    Documents,
+    DocumentTypes,
+    MaintenanceType,
+    Unit,
+)
 
 
 def get_building_by_id(building_id: int) -> Optional[Building]:
@@ -34,5 +41,26 @@ def get_building_documents(building_id: int) -> list[Any]:
         )
         .join(Documents, Documents.document_type_id == DocumentTypes.document_type_id)
         .filter(Documents.building_id == building_id)
+        .all()
+    )
+
+
+def get_building_maintenance(building_id: int) -> list[Any]:
+    return (
+        db.session.query(
+            Maintenance.maintenance_id,
+            MaintenanceType.maintenance_type,
+            Maintenance.unit_id,
+            Unit.unit_number,
+            Maintenance.date_requested,
+            Maintenance.status,
+            Maintenance.priority,
+        )
+        .join(
+            MaintenanceType,
+            MaintenanceType.maintenance_type_id == Maintenance.maintenance_type_id,
+        )
+        .outerjoin(Unit, Maintenance.unit_id == Unit.unit_id)
+        .filter(Maintenance.building_id == building_id)
         .all()
     )
