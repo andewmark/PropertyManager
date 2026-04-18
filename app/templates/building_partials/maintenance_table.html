@@ -37,7 +37,7 @@
             </a>
           </td>
           <td class="py-3 text-left text-sm">
-              {{ workItem.date_requested }}
+              {{ workItem.date_requested.strftime("%B %d, %Y") }}
           </td>
           <td class="py-3 text-left text-sm">
               {{ workItem.status}}

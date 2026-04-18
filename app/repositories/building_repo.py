@@ -1,6 +1,6 @@
 from typing import Optional, Any
 from app.extensions import db
-from sqlalchemy import distinct
+from sqlalchemy import distinct, func, literal, null
 from app.models import (
     Building,
     Maintenance,
@@ -8,6 +8,12 @@ from app.models import (
     DocumentTypes,
     MaintenanceType,
     Unit,
+    Charges,
+    Payments,
+    Application,
+    Tenants,
+    Lease,
+    PropertyExpenses,
 )
 
 
@@ -64,3 +70,45 @@ def get_building_maintenance(building_id: int) -> list[Any]:
         .filter(Maintenance.building_id == building_id)
         .all()
     )
+
+
+def get_building_transactions(building_id: int) -> list[Any]:
+    """
+    Returns combined list of charges and expenses for a building's transactions table,
+    normalized into a shared structure
+    """
+    charges = (
+        db.session.query(
+            literal("charge").label("transaction_type"),
+            Charges.charge_type.label("description"),
+            Unit.unit_id,
+            Unit.unit_number,
+            Payments.payment_date.label("date"),
+            Application.amount_applied.label("amount"),
+            func.concat(Tenants.first_name, " ", Tenants.family_name).label(
+                "tenant_name"
+            ),
+        )
+        .join(Payments, Payments.payment_id == Application.payment_id)
+        .join(Charges, Charges.charge_id == Application.charge_id)
+        .join(Lease, Lease.lease_id == Charges.lease_id)
+        .join(Tenants, Tenants.tenant_id == Lease.tenant_id)
+        .join(Unit, Unit.unit_id == Lease.unit_id)
+        .filter(Unit.building_id == building_id)
+    )
+
+    expenses = (
+        db.session.query(
+            literal("expense").label("transaction_type"),
+            PropertyExpenses.description.label("description"),
+            PropertyExpenses.unit_id,
+            Unit.unit_number,
+            PropertyExpenses.date_incurred.label("date"),
+            PropertyExpenses.expense_amount.label("amount"),
+            null().label("tenant_name"),
+        )
+        .outerjoin(Unit, PropertyExpenses.unit_id == Unit.unit_id)
+        .filter(PropertyExpenses.building_id == building_id)
+    )
+
+    return charges.union_all(expenses).order_by("date").all()

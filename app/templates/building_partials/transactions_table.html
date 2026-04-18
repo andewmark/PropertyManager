@@ -21,31 +21,56 @@
           </th>
         </tr>
       </thead>
+      
+      <tbody>
+        {% for transaction in transactions %}
+          <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+            <td class="py-3 text-left text-sm">
+              <a href="https://alexlevydesigner.com/"
+              class="text-blue-600 hover:underline">
+                {{ transaction.description }}
+              </a>
+            </td>
+            <td class="py-3 text-left text-sm">
+              {% if transaction.unit_id %}
+                <a href="{{ url_for('unit.unit_detail', unit_id=transaction.unit_id) }}"
+                  class="text-blue-600 hover:underline">
+                  {{ transaction.unit_number }}
+                </a>
+              {% else %}
+                <span class="text-gray-400">—</span>
+              {% endif %}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ transaction.tenant_name or "—" }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ transaction.date.strftime("%B %d, %Y") }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {% if transaction.transaction_type == "expense" %}
+              <span class="text-red-800">
+                -${{ transaction.amount }}
+              </span>
+              {% else %}
+              <span class="text-green-800">
+                +${{ transaction.amount }}
+              </span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
 
-      {% for workItem in maintenance %}
-        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
-          <td class="py-3 text-left text-sm">
-            <a href="https://alexlevydesigner.com/"
-            class="text-blue-600 hover:underline">
-              {{ workItem.maintenance_type }}
-            </a>
+      <tfoot class="border-t-2 border-gray-300">
+        <tr class="border-t border-gray-200">
+          <td colspan="4" class="py-3 text-right text-sm font-semibold">Net Total:</td>
+          <td class="py-3 text-sm font-bold
+            {% if net_total >= 0 %}text-green-800{% else %}text-red-800{% endif %}">
+            {% if net_total >= 0 %}+{% else %}-{% endif %}
+            ${{ net_total | abs }}
           </td>
-          <td class="py-3 text-left text-sm">
-            <a href="{{ url_for('unit.unit_detail', unit_id=workItem.unit_id) }}"
-            class="text-blue-600 hover:underline">
-            {{ workItem.unit_number }}
-            </a>
-          </td>
-          <td class="py-3 text-left text-sm">
-              {{ workItem.date_requested }}
-          </td>
-          <td class="py-3 text-left text-sm">
-              {{ workItem.status}}
-          </td>
-          <td class="py-3 text-left text-sm">
-              {{ workItem.priority }}
-          </td>
-      </tr>
-      {% endfor %}
+        </tr>
+      </tfoot>
     </table>
 </div>

@@ -8,6 +8,7 @@ from app.repositories.building_repo import (
     get_active_building_maintenance,
     get_building_documents,
     get_building_maintenance,
+    get_building_transactions,
 )
 from app.repositories.unit_repo import (
     get_occupied_unit_ids,
@@ -33,6 +34,11 @@ def get_building_dashboard(
 
     if not property_obj or not building_obj:
         return None
+
+    # Initialize variables
+    charges_total = 0
+    expenses_total = 0
+    net_total = 0
 
     today, first_day, next_month = current_month_bounds()
     breadcrumb = generate_breadcrumbs(property_id=property_id, building_id=building_id)
@@ -66,10 +72,18 @@ def get_building_dashboard(
             )
     elif tab == "maintenance":
         maintenance = get_building_maintenance(building_id)
+        open_maintenance = len(maintenance)
     elif tab == "documents":
         documents = get_building_documents(building_id)
     elif tab == "transactions":
-        transactions = []
+        transactions = get_building_transactions(building_id)
+        charges_total = sum(
+            t.amount for t in transactions if t.transaction_type == "charge"
+        )
+        expenses_total = sum(
+            t.amount for t in transactions if t.transaction_type == "expense"
+        )
+        net_total = charges_total - expenses_total
 
     # Calculate Occupancy Rate
     unit_occupied_count = len(occupied_unit_ids)
@@ -85,9 +99,7 @@ def get_building_dashboard(
     total_outstanding = get_total_outstanding_for_building(today, building_id)
 
     # Retrieve Open Work orders
-    if tab == "maintenance":
-        open_maintenance = len(maintenance)
-    else:
+    if tab != "maintenance":
         open_maintenance = get_active_building_maintenance(building_id)
 
     return {
@@ -107,4 +119,7 @@ def get_building_dashboard(
         "maintenance": maintenance,
         "documents": documents,
         "transactions": transactions,
+        "charges_total": charges_total,
+        "expenses_total": expenses_total,
+        "net_total": net_total,
     }
