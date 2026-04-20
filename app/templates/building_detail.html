@@ -136,17 +136,31 @@
 
 <div class="grid md:grid-cols-2 gap-8 mb-10">
 
-  <div class="bg-white p-5 rounded-2xl shadow">
+  <div class="bg-white p-5 rounded-2xl shadow min-h-48">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-gray-600 text-md">Upcoming lease expirations</h3>
       <a href="#" class="text-blue-600 text-sm hover:underline">
-        View all
-        <i class="fa-solid fa-arrow-right text-blue-500 text-sm"></i>
+          View all
+          <i class="fa-solid fa-arrow-right text-blue-500 text-sm"></i>
       </a>
     </div>
+    {% for lease in expiring_leases %}
+      <div class="mb-6 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+              <h3 class="text-gray-800 text-lg">{{ lease.tenant_name }} - Unit {{ lease.unit_number }}</h3>
+              <span class="w-fit text-sm font-semibold px-3 py-1 rounded-full flex items-center gap-2
+                {{ 'bg-blue-200 text-blue-800' if lease.days_until_expiry > 60 
+                else 'bg-yellow-200 text-yellow-800' if lease.days_until_expiry >= 30 
+                else 'bg-red-200 text-red-800' }}">
+                <h4 class="m-0">{{ lease.days_until_expiry }} days</h4>
+              </span>
+          </div>
+          <h4 class="text-gray-500 text-sm mb-3">Expires {{ lease.end_date.strftime("%b %d, %Y") }}</h4>
+      </div>
+    {% endfor %}
   </div>
 
-  <div class="bg-white p-5 rounded-2xl shadow">
+  <div class="bg-white p-5 rounded-2xl shadow min-h-48 max-h-64">
     <h3 class="text-gray-600 text-md mb-3">YTD financials</h3>
     <div class="flex items-center justify-between mb-3 border-b border-gray-200">
       <h4 class="text-gray-500 text-md">Revenue collected</h4>
@@ -170,7 +184,7 @@
     </div>
   </div>
 
-  <div class="bg-white p-5 rounded-2xl shadow">
+  <div class="bg-white p-5 rounded-2xl shadow min-h-48 max-h-64">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-gray-600 text-md">Delinquency breakdown</h3>
       <a href="#" class="text-blue-600 text-sm hover:underline">
@@ -180,7 +194,7 @@
     </div>
   </div>
 
-  <div class="bg-white p-5 rounded-2xl shadow">
+  <div class="bg-white p-5 rounded-2xl shadow min-h-48">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-gray-600 text-md">Maintenance</h3>
       <a href="#" class="text-blue-600 text-sm hover:underline">

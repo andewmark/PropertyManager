@@ -1,4 +1,5 @@
 from typing import Optional, Any
+from datetime import date
 from app.extensions import db
 from sqlalchemy import distinct, func, literal, null
 from app.models import (
@@ -52,6 +53,15 @@ def get_building_documents(building_id: int) -> list[Any]:
 
 
 def get_building_maintenance(building_id: int) -> list[Any]:
+    """
+    Query for maintenance related to passed in building
+
+    Args:
+        building_id (int)
+
+    Returns:
+        list[Any]:
+    """
     return (
         db.session.query(
             Maintenance.maintenance_id,
@@ -112,3 +122,29 @@ def get_building_transactions(building_id: int) -> list[Any]:
     )
 
     return charges.union_all(expenses).order_by("date").all()
+
+
+def get_building_expiring_leases(building_id: int, today: date) -> list[Any]:
+    """
+    Args:
+        building_id (int)
+
+    Returns:
+        list[Any]: Returns Expiring leases
+    """
+    return (
+        db.session.query(
+            func.concat(Tenants.first_name, " ", Tenants.family_name).label(
+                "tenant_name"
+            ),
+            Unit.unit_number,
+            Lease.end_date,
+        )
+        .join(Unit, Unit.unit_id == Lease.unit_id)
+        .join(Tenants, Tenants.tenant_id == Lease.tenant_id)
+        .filter(Lease.end_date >= today)
+        .filter(Unit.building_id == building_id)
+        .order_by(Lease.end_date.desc())
+        .limit(4)
+        .all()
+    )

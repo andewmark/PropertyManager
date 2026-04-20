@@ -9,6 +9,7 @@ from app.repositories.building_repo import (
     get_building_documents,
     get_building_maintenance,
     get_building_transactions,
+    get_building_expiring_leases,
 )
 from app.repositories.unit_repo import (
     get_occupied_unit_ids,
@@ -102,6 +103,20 @@ def get_building_dashboard(
     if tab != "maintenance":
         open_maintenance = get_active_building_maintenance(building_id)
 
+    # Retrieve upcoming Lease expirations
+    expiring_leases = get_building_expiring_leases(building_id, today)
+    expiring_leases_data = [
+        {
+            "tenant_name": lease.tenant_name,
+            "unit_number": lease.unit_number,
+            "end_date": lease.end_date,
+            "days_until_expiry": (lease.end_date - today).days,
+        }
+        for lease in expiring_leases
+    ]
+
+    # Retrieve Delinquency Breakdown
+
     return {
         "building": building_obj,
         "units": units_data,
@@ -114,7 +129,7 @@ def get_building_dashboard(
         "total_outstanding": total_outstanding,
         "next_rent_due": next_rent_due,
         "breadcrumb": breadcrumb,
-        "open_maintenance": open_maintenance,
+        "open_maintenance": open_maintenance,  # type: ignore
         "tab": tab,
         "maintenance": maintenance,
         "documents": documents,
@@ -122,4 +137,5 @@ def get_building_dashboard(
         "charges_total": charges_total,
         "expenses_total": expenses_total,
         "net_total": net_total,
+        "expiring_leases": expiring_leases_data,
     }

@@ -45,7 +45,7 @@
               {{ transaction.tenant_name or "—" }}
             </td>
             <td class="py-3 text-left text-sm">
-              {{ transaction.date.strftime("%B %d, %Y") }}
+              {{ transaction.date.strftime("%b %d, %Y") }}
             </td>
             <td class="py-3 text-left text-sm">
               {% if transaction.transaction_type == "expense" %}
