@@ -148,3 +148,36 @@ def get_building_expiring_leases(building_id: int, today: date) -> list[Any]:
         .limit(4)
         .all()
     )
+
+
+def get_delinquent_tenants(building_id: int) -> list[Any]:
+    pa_subquery = (
+        db.session.query(
+            Application.charge_id,
+            func.sum(Application.amount_applied).label("total_applied"),
+        )
+        .group_by(Application.charge_id)
+        .subquery()
+    )
+
+    return (
+        db.session.query(
+            Tenants.tenant_id,
+            Unit.unit_number,
+            func.concat(Tenants.first_name, " ", Tenants.family_name).label(
+                "tenant_name"
+            ),
+            func.sum(
+                Charges.amount - func.coalesce(pa_subquery.c.total_applied, 0)
+            ).label("total_outstanding"),
+            func.max(Payments.payment_date).label("last_payment_date"),
+        )
+        .join(Lease, Lease.lease_id == Charges.lease_id)
+        .join(Tenants, Tenants.tenant_id == Lease.tenant_id)
+        .join(Unit, Unit.unit_id == Lease.unit_id)
+        .outerjoin(pa_subquery, pa_subquery.c.charge_id == Charges.charge_id)
+        .outerjoin(Payments, Payments.lease_id == Lease.lease_id)
+        .filter(Unit.building_id == building_id)
+        .group_by(Tenants.tenant_id, Unit.unit_number)
+        .all()
+    )

@@ -10,6 +10,7 @@ from app.repositories.building_repo import (
     get_building_maintenance,
     get_building_transactions,
     get_building_expiring_leases,
+    get_delinquent_tenants,
 )
 from app.repositories.unit_repo import (
     get_occupied_unit_ids,
@@ -116,6 +117,18 @@ def get_building_dashboard(
     ]
 
     # Retrieve Delinquency Breakdown
+    delinquent_tenants = get_delinquent_tenants(building_id)
+    delinquent_tenants_data = [
+        {
+            "tenant_id": tenant,
+            "unit_number": tenant.unit_number,
+            "tenant_name": tenant.tenant_name,
+            "total_outstanding": tenant.total_outstanding,
+            "last_payment_date": tenant.last_payment_date,
+            "days_since_paid": (today - tenant.last_payment_date).days,
+        }
+        for tenant in delinquent_tenants
+    ]
 
     return {
         "building": building_obj,
@@ -138,4 +151,5 @@ def get_building_dashboard(
         "expenses_total": expenses_total,
         "net_total": net_total,
         "expiring_leases": expiring_leases_data,
+        "delinquent_tenants": delinquent_tenants_data,
     }
