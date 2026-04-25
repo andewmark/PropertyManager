@@ -8,7 +8,7 @@ from app.repositories.unit_repo import (
     get_unit_YTD_expenses,
     get_outstanding_by_unit_ids,
     get_unit_amenities,
-    get_unit_utlities,
+    get_unit_utilities,
     get_tenants_information_by_unit,
     get_unit_documents,
     get_unit_maintenance,
@@ -93,7 +93,7 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
         outstanding_balance = outstanding_dict[unit_id]
 
     # Retrieve Utilities
-    utilties = get_unit_utlities(unit_id)
+    utilities = get_unit_utilities(unit_id)
 
     # Retrieve Amenities
     amenities = get_unit_amenities(unit_id)
@@ -138,7 +138,7 @@ def get_unit_dashboard(unit_id: int, tab: str) -> dict[str, Any]:
         "YTD_expenses": f"{YTD_expenses:.2f}",
         "outstanding_balance": f"{outstanding_balance:.2f}",
         "amenities": amenities,
-        "utilities": utilties,
+        "utilities": utilities,
         "leases": leases,
         "documents": documents,
         "maintenance": maintenance,

@@ -34,19 +34,29 @@
 </div>
 
 <!--Overview Summary-->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
 
-  <!--Occupany Rate Panel-->
+  <!--Occupancy Rate Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">Occupany Rate</h3>
+    <h3 class="text-gray-500 text-md">Occupancy rate</h3>
     <p class="text-2xl font-bold text-gray-800">{{ occupancy_rate }}%</p>
+    <div class="w-full bg-gray-200 rounded-full h-2">
+      <div
+        class="h-2 rounded-full bg-blue-500"
+        style="width: {{ occupancy_rate }}%"
+        role="progressbar"
+        aria-valuenow="{{ occupancy_rate }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
     <p class="text-gray-500 text-sm">{{ unit_occupied_count }} of {{total_units}} units occupied</p>
   </div>
 
   <!--Rent Collected Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">
-      Rent Collected (This Month)
+    <h3 class="text-gray-500 text-md">
+      Rent collected (this month)
     </h3>
 
     <div class="flex items-center gap-1">
@@ -79,15 +89,21 @@
       {% endif %}
     </div>
 
+    {% if next_rent_due %}
     <p class="text-gray-500 text-sm">
-      Next Rent Due: {{ next_rent_due }}
+      Next due: {{ next_rent_due }}
     </p>
+    {% else %}
+    <p class="text-gray-500 text-sm">
+      No upcoming rent scheduled
+    </p>
+    {% endif %}
   </div>
 
   <!--Outstanding Tenants Balance Panel-->
   <div class="bg-white p-5 rounded-2xl shadow">
-    <h3 class="text-gray-500 text-md mb-2">
-      Outstanding Tenants Balance
+    <h3 class="text-gray-500 text-md">
+      Outstanding balance
     </h3>
 
     <p class="text-2xl font-bold text-black-600">
@@ -104,122 +120,166 @@
       {% endif %}
     </div>
   </div>
+
+  <!--Open Work Orders-->
+  <div class="bg-white p-5 rounded-2xl shadow">
+    <h3 class="text-gray-500 text-md">
+      Open work orders
+    </h3>
+
+    <p class="text-2xl font-bold text-black-600">
+      {{ open_maintenance }}
+    </p>
+    
+    <div class="flex items-center gap-2">
+      {% if open_maintenance > 0 %}
+        <h3 class="text-md text-gray-500">
+          {{ high_priority_maintenance }} high priority
+        </h3>
+      {% endif %}
+    </div>
+  </div>
     
 </div>
 
-<!-- Search + Filters Bar -->
-<div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-
-  <!-- Search -->
-  <div class="relative w-full sm:max-w-md">
-    <label for="searchbar" class="sr-only">
-      Search units, tenants, or status
-    </label>
-
-    <!-- Icon -->
-    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
-      <i class="fa-solid fa-magnifying-glass"></i>
-    </span>
-
-    <input
-      type="text"
-      id="searchbar"
-      name="searchbar"
-      placeholder="Search units, tenants, status…"
-      class="w-full rounded-2xl border border-gray-300 bg-white py-2 pl-10 pr-10 text-sm
-             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-             shadow-sm"
-    />
-
-    <!-- Clear button -->
-    <button
-      type="button"
-      id="clear-search"
-      class="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600"
-      aria-label="Clear search"
-    >
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-  </div>
-</div>
-
-
-<!--Units Table-->
-<div class="overflow-x-auto rounded-2xl shadow">
-  <table class="w-full table-fixed border-collapse">
-    <thead class="bg-gray-300">
-      <tr>
-        <th class="px-4 py-3 text-left text-md font-semibold text-black">
-          Unit Number
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-black">
-          Occupancy status
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Tenant name(s)
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Rent Amount
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Outstanding Balance
-        </th>
-        <th class="px-4 py-3 text-left text-md font-semibold text-gray-800">
-          Status flags
-        </th>
-      </tr>
-    </thead>
-
-    <tbody class="divide-y divide-gray-200">
-      {% for item in units %}
-      <tr class="odd:bg-white even:bg-gray-100 hover:bg-gray-200 transition-colors">
-        <td class="px-4 py-3 truncate">
-          <a href="/units/{{ item.unit.unit_id }}"
-          class="text-md text-blue-600 hover:underline">
-            {{ item.unit.unit_number }}
-          </a>
-        </td>
-        <td class="px-4 py-3 truncate">
-          {{ item.is_occupied }}
-        </td>
-        <td class="px-4 py-3 truncate">
-          {% if item.tenants %}
-            <ul class="space-y-1">
-              {% for tenant in item.tenants %}
-              <li>
-                <!--TODO: Create Tenants Detail Page-->
-                <a href="/"
-                class="text-md text-blue-600 hover:underline">
-                  {{ tenant.first_name }} {{ tenant.family_name}}
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-          <span class="text-gray-400 italic">—</span>
-          {% endif %}
-        </td>
-        <td class="px-4 py-3 truncate">
-          ${{ item.current_rent }}
-        </td>
-        <td class="px-4 py-3 truncate">
-          {% if item.outstanding_balance %}
-            ${{ item.outstanding_balance }}
-          {% else %}
-            $0.00
-          {% endif %}
-        </td>
-        <td class="px-4 py-3 truncate">
-          
-        </td>
-      </tr>
-    </tbody>
+<!--Panels-->
+<div class="grid md:grid-cols-2 gap-6 mb-10">
+  
+  <!--Upcoming lease expirations-->
+  <div class="bg-white p-5 rounded-2xl shadow min-h-48">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-gray-600 text-md">Upcoming lease expirations</h3>
+      <a href="#" class="text-blue-600 text-sm hover:underline">
+          View all
+          <i class="fa-solid fa-arrow-right text-blue-500 text-sm"></i>
+      </a>
+    </div>
+    {% for lease in expiring_leases %}
+      <div class="mb-6 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+              <h3 class="text-gray-800 text-md">{{ lease.tenant_name }} ━ Unit {{ lease.unit_number }}</h3>
+              <span class="w-fit text-sm font-semibold px-3 py-1 rounded-full flex items-center gap-2
+                {{ 'bg-blue-200 text-blue-800' if lease.days_until_expiry > 60 
+                else 'bg-yellow-200 text-yellow-800' if lease.days_until_expiry >= 30 
+                else 'bg-red-200 text-red-800' }}">
+                <h4 class="m-0">{{ lease.days_until_expiry }} days</h4>
+              </span>
+          </div>
+          <h4 class="text-gray-500 text-sm mb-3">Expires {{ lease.end_date.strftime("%b %d, %Y") }}</h4>
+      </div>
     {% endfor %}
+  </div>
 
-  </table>
+  <!--YTD Financials-->
+  <div class="bg-white p-5 rounded-2xl shadow max-h-64">
+    <h3 class="text-gray-600 text-md mb-3">YTD financials</h3>
+    <div class="flex items-center justify-between mb-3 border-b border-gray-200">
+      <h4 class="text-gray-500 text-md">Revenue collected</h4>
+      <h4 class="text-gray-800 text-md font-semibold">$1000</h4>
+    </div>
+    <div class="flex items-center justify-between mb-3 border-b border-gray-200">
+      <h4 class="text-gray-500 text-md">Expected revenue</h4>
+      <h4 class="text-gray-800 text-md font-semibold">$1000</h4>
+    </div>
+    <div class="flex items-center justify-between mb-3 border-b border-gray-200">
+      <h4 class="text-gray-500 text-md">Maintenance & repair</h4>
+      <h4 class="text-gray-800 text-md font-semibold">$1000</h4>
+    </div>
+    <div class="flex items-center justify-between mb-3 border-b border-gray-200">
+      <h4 class="text-gray-500 text-md">Other expenses</h4>
+      <h4 class="text-gray-800 text-md font-semibold">$1000</h4>
+    </div>
+    <div class="flex items-center justify-between mb-3 border-b border-gray-200">
+      <h4 class="text-gray-500 text-md">Net income (YTD)</h4>
+      <h4 class="text-gray-800 text-md font-semibold">$1000</h4>
+    </div>
+  </div>
+
+  <!--Delinquency breakdown-->
+  <div class="bg-white p-5 rounded-2xl shadow min-h-64">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-gray-600 text-md">Delinquency breakdown</h3>
+      <a href="#" class="text-blue-600 text-sm hover:underline">
+        View all
+        <i class="fa-solid fa-arrow-right text-blue-500 text-sm"></i>
+      </a>
+    </div>
+
+    {% for tenant in delinquent_tenants %}
+      <div class="mb-6 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h3 class="text-gray-800 text-md">{{ tenant.tenant_name }} - Unit {{ tenant.unit_number }}</h3>
+            <h4 class="text-md font-semibold gap-2 text-red-700">${{ tenant.total_outstanding }}</h4>
+          </div>
+          <div class="flex items-center justify-between">
+            <h4 class="text-gray-500 text-sm mb-3">Last paid: {{ tenant.last_payment_date.strftime("%b %d, %Y") }}</h4>
+            <span class="w-fit text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-2
+                {{ 'bg-red-200 text-red-800' if tenant.days_since_paid > 60 
+                else 'bg-yellow-200 text-yellow-800' if tenant.days_since_paid >= 30 
+                else 'bg-blue-200 text-blue-800' }}">
+                <h4 class="m-0">{{ tenant.days_since_paid }} days</h4>
+              </span>
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!--Notes-->
+  <div class="bg-white p-5 rounded-2xl shadow min-h-64">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-gray-600 text-md">Notes</h3>
+      <a href="#" class="text-blue-600 text-sm hover:underline">
+        View all
+        <i class="fa-solid fa-arrow-right text-blue-500 text-sm"></i>
+      </a>
+    </div>
+  </div>
+
 </div>
 
-{% endblock %}
+<!--Tabs-->
+<div class="overflow-x-auto min-w-0 mt-6">
+  <div id='table' class="flex whitespace-nowrap space-x-1">
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='units') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'units' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Units
+    </a>
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='documents') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'documents' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Documents
+    </a>
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='maintenance') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'maintenance' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Maintenance
+    </a>
+
+    <a href="{{ url_for('building.building_detail', property_id=building.property_id, building_id=building.building_id, tab='transactions') }}#table"
+      class="inline-flex items-center px-4 pb-3 pt-2 text-sm font-medium rounded-t-lg -mb-px relative
+      {{ 'bg-white text-gray-900 border-t border-l border-r border-gray-200 z-10' if tab == 'transactions' else 'bg-transparent text-gray-600 hover:text-gray-700' }}">
+      Transactions
+    </a>
+
+  </div>
+
+  {% if tab == 'units' %}
+    {% include 'building_partials/units_table.html' %}
+  {% elif tab == 'documents' %}
+    {% include 'building_partials/documents_table.html' %}
+  {% elif tab == 'maintenance' %}
+    {% include 'building_partials/maintenance_table.html' %}
+  {% elif tab == 'transactions' %}
+    {% include 'building_partials/transactions_table.html' %}
+
+  {% endif %}
+  {% endblock %}
+
+</div>
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/search_table.js') }}"></script>

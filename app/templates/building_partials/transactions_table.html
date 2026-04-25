@@ -1,0 +1,76 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'leases' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Description
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Unit
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Tenant
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Date
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Amount
+          </th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        {% for transaction in transactions %}
+          <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+            <td class="py-3 text-left text-sm">
+              <a href="https://alexlevydesigner.com/"
+              class="text-blue-600 hover:underline">
+                {{ transaction.description }}
+              </a>
+            </td>
+            <td class="py-3 text-left text-sm">
+              {% if transaction.unit_id %}
+                <a href="{{ url_for('unit.unit_detail', unit_id=transaction.unit_id) }}"
+                  class="text-blue-600 hover:underline">
+                  {{ transaction.unit_number }}
+                </a>
+              {% else %}
+                <span class="text-gray-400">—</span>
+              {% endif %}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ transaction.tenant_name or "—" }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {{ transaction.date.strftime("%b %d, %Y") }}
+            </td>
+            <td class="py-3 text-left text-sm">
+              {% if transaction.transaction_type == "expense" %}
+              <span class="text-red-800">
+                -${{ transaction.amount }}
+              </span>
+              {% else %}
+              <span class="text-green-800">
+                +${{ transaction.amount }}
+              </span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
+      <tfoot class="border-t-2 border-gray-300">
+        <tr class="border-t border-gray-200">
+          <td colspan="4" class="py-3 text-right text-sm font-semibold">Net Total:</td>
+          <td class="py-3 text-sm font-bold
+            {% if net_total >= 0 %}text-green-800{% else %}text-red-800{% endif %}">
+            {% if net_total >= 0 %}+{% else %}-{% endif %}
+            ${{ net_total | abs }}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+</div>

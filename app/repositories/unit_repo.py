@@ -52,7 +52,7 @@ def get_unit_by_id(unit_id: int) -> Unit:
 
 def get_occupied_unit_ids(unit_ids: list[int]) -> set[int]:
     """
-    Get Occupied units by unit_id based on if they have an acitve lease
+    Get Occupied units by unit_id based on if they have an active lease
 
     Args:
         unit_ids (Arr[Ints]): List of unit_ids
@@ -74,7 +74,7 @@ def get_occupied_unit_ids(unit_ids: list[int]) -> set[int]:
     }
 
 
-def get_current_tennants_by_unit_ids(unit_ids: list[int]) -> dict[int, list[Tenants]]:
+def get_current_tenants_by_unit_ids(unit_ids: list[int]) -> dict[int, list[Tenants]]:
     """
     Get current tenants given a list of unit ids
 
@@ -263,7 +263,7 @@ def get_unit_amenities(unit_id: int) -> list[Amenities]:
     )
 
 
-def get_unit_utlities(unit_id: int) -> list[Utilities]:
+def get_unit_utilities(unit_id: int) -> list[Utilities]:
     return (
         db.session.query(Utilities.utility_name)
         .join(UnitUtilities, UnitUtilities.utility_id == Utilities.utility_id)
@@ -275,7 +275,7 @@ def get_unit_utlities(unit_id: int) -> list[Utilities]:
 def get_unit_maintenance(unit_id: int) -> list[Maintenance]:
     return (
         db.session.query(
-            Maintenance.request_id,
+            Maintenance.maintenance_id,
             Maintenance.date_requested,
             Maintenance.priority,
             Maintenance.status,
@@ -291,7 +291,8 @@ def get_unit_maintenance(unit_id: int) -> list[Maintenance]:
         .outerjoin(Tenants, Tenants.tenant_id == Maintenance.tenant_id)
         .outerjoin(Vendors, Vendors.vendor_id == Maintenance.vendor_id)
         .outerjoin(
-            PropertyExpenses, PropertyExpenses.request_id == Maintenance.request_id
+            PropertyExpenses,
+            PropertyExpenses.maintenance_id == Maintenance.maintenance_id,
         )
         .filter(Maintenance.unit_id == unit_id)
         .all()

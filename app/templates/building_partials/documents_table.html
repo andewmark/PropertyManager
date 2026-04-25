@@ -1,0 +1,45 @@
+<!--Lease Information Panel-->
+<div class="bg-white p-5 shadow mb-8 border border-gray-200 min-w-fit
+     {{ 'rounded-tr-2xl rounded-b-2xl' if tab == 'leases' else 'rounded-2xl' }}">
+    <table class="min-w-[800px] w-full border-separate border-spacing-0">
+      <thead>
+        <tr>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            File Name
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Type
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Uploaded Date
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Uploaded By
+          </th>
+          <th class="text-sm font-semibold text-gray-900 border-b break-words whitespace-normal border-gray-200 py-2 text-left">
+            Actions
+          </th>
+        </tr>
+      </thead>
+
+      {% for document in documents %}
+        <tr class="hover:bg-gray-100 transition-colors border-b border-gray-100">
+          <td class="py-3 text-left text-sm">
+              {{ document.stored_filename }}
+          </td>
+          <td class="py-3 text-left text-sm">
+            {{ document.document_type }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              {{ document.uploaded_at.strftime("%b %d, %Y") }}
+          </td>
+          <td class="py-3 text-left text-sm">
+              -
+          </td>
+          <td class="py-3 text-left text-sm">
+              -
+          </td>
+      </tr>
+      {% endfor %}
+    </table>
+</div>
