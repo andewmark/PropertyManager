@@ -20,7 +20,7 @@ nodeenv==1.10.0
 platformdirs==4.5.1
 pre_commit==4.5.1
 psycopg2-binary==2.9.11
-python-dotenv==1.2.1
+python-dotenv==1.2.2
 PyYAML==6.0.3
 ruff==0.14.14
 SQLAlchemy==2.0.44
