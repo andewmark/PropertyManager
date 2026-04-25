@@ -40,6 +40,16 @@
   <div class="bg-white p-5 rounded-2xl shadow">
     <h3 class="text-gray-500 text-md">Occupancy rate</h3>
     <p class="text-2xl font-bold text-gray-800">{{ occupancy_rate }}%</p>
+    <div class="w-full bg-gray-200 rounded-full h-2">
+      <div
+        class="h-2 rounded-full bg-blue-500"
+        style="width: {{ occupancy_rate }}%"
+        role="progressbar"
+        aria-valuenow="{{ occupancy_rate }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
     <p class="text-gray-500 text-sm">{{ unit_occupied_count }} of {{total_units}} units occupied</p>
   </div>
 
@@ -121,13 +131,11 @@
       {{ open_maintenance }}
     </p>
     
-    <!--TODO: Link button to page with filtered report-->
-    <div class="flex items-center gap-2 cursor-pointer">
+    <div class="flex items-center gap-2">
       {% if open_maintenance > 0 %}
-        <a href='https://alexlevydesigner.com/' target="_blank" class="text-md text-blue-500 hover:underline">
-          View tenants with outstanding balances
-        </a>
-        <i class="fa-solid fa-arrow-right text-blue-500"></i>
+        <h3 class="text-md text-gray-500">
+          {{ high_priority_maintenance }} high priority
+        </h3>
       {% endif %}
     </div>
   </div>

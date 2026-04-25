@@ -11,6 +11,7 @@ from app.repositories.building_repo import (
     get_building_transactions,
     get_building_expiring_leases,
     get_delinquent_tenants,
+    get_high_priority_maintenance_count,
 )
 from app.repositories.unit_repo import (
     get_occupied_unit_ids,
@@ -103,6 +104,7 @@ def get_building_dashboard(
     # Retrieve Open Work orders
     if tab != "maintenance":
         open_maintenance = get_active_building_maintenance(building_id)
+    high_priority_maintenance = get_high_priority_maintenance_count(building_id)
 
     # Retrieve upcoming Lease expirations
     expiring_leases = get_building_expiring_leases(building_id, today)
@@ -143,6 +145,7 @@ def get_building_dashboard(
         "next_rent_due": next_rent_due,
         "breadcrumb": breadcrumb,
         "open_maintenance": open_maintenance,  # type: ignore
+        "high_priority_maintenance": high_priority_maintenance,
         "tab": tab,
         "maintenance": maintenance,
         "documents": documents,

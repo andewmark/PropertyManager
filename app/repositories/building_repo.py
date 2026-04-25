@@ -181,3 +181,12 @@ def get_delinquent_tenants(building_id: int) -> list[Any]:
         .group_by(Tenants.tenant_id, Unit.unit_number)
         .all()
     )
+
+
+def get_high_priority_maintenance_count(building_id: int) -> list[Any]:
+    return (
+        db.session.query(Maintenance.maintenance_id)
+        .filter(Maintenance.building_id == building_id)
+        .filter(Maintenance.priority == "High")
+        .count()
+    )
