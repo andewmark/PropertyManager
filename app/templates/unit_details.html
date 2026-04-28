@@ -44,24 +44,79 @@
 </div>
 
 <!--Overview Summary-->
-<div class="mb-8">
+<div class="grid grid-cols-3 gap-4 mb-4">
+  <div class="bg-white pt-5 rounded-2xl shadow"> 
+    <div class="border-b border-gray-200 flex items-center pl-5 pb-4">
+      <div class="w-12 h-12 bg-blue-600 text-blue-200 rounded-full flex items-center justify-center">
+      JD
+      </div>
+      <div class="ml-4">
+      <div class="text-gray-900 font-semibold">Name</div>
+      <div class="text-gray-500 text-sm">Email</div>
+      <div class="text-gray-500 text-sm">Number</div>
+      </div>
+    </div>
 
-  <!--Unit Overview Information-->
-  <div class="bg-white p-5 rounded-2xl shadow grid grid-cols-2">
-    <div>
-      <!--Current Lease-->
-      <div class="mb-3">
-        <h3 class="text-gray-500 text-md">Current Lease</h3>
-        {% for lease in current_leases %}
-          <h4 class="text-gray-800 text-lg font-bold">{{ lease.start_date }} - {{ lease.end_date }}</h4>
-        {% endfor %}
+    <div class="grid grid-cols-2">
+      <div class="border-r border-gray-200">
+        <h3 class="text-gray-500 pt-3 px-5  text-sm">
+          Lease #
+        </h3>
+        <h3 class="px-5 text-gray-900 font-semibold mb-4"> 
+          Lease Number goes here
+        </h3>
       </div>
 
-      <!--Next Rent Due-->
-      <div class="mb-3">
-        <h3 class="text-gray-500 text-md">Next Rent Due</h3>
+      <div>
+        <h3 class="text-gray-500 pt-3 px-5  text-sm">
+          Rent
+        </h3>
+        <h3 class="px-5 text-gray-900 font-semibold"> 
+          $ Rent / mo
+        </h3>
       </div>
 
+      <div class="border-r border-t border-gray-200">
+        <h3 class="text-gray-500 pt-3 px-5  text-sm">
+          Lease Period
+        </h3>
+        <h3 class="px-5 text-gray-900 font-semibold mb-1"> 
+          A Past date - A past date
+        </h3>
+        <div class="flex items-center justify-start ml-4">
+          <span class="bg-blue-200 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 mb-4"
+              aria-label="Unit Occupied">
+            <h4>132 days left</h4>
+          </span>
+        </div>
+      </div>
+
+      <div class="border-t">
+        <h3 class="text-gray-500 pt-3 px-5 text-sm">
+          This month
+        </h3>
+        <h3 class="px-5 text-gray-900 font-semibold"> 
+          A Past date - A past date
+        </h3>
+      </div>
+
+      <div class="border-r border-t border-gray-200">
+        <h3 class="text-gray-500 pt-3 px-5 text-sm">
+          Outstanding balance
+        </h3>
+        <h3 class="px-5 text-red-900 font-semibold mb-4"> 
+          $1875.00
+        </h3>
+      </div>
+
+      <div class="border-t">
+        <h3 class="text-gray-500 pt-3 px-5 text-sm">
+          Security deposit
+        </h3>
+        <h3 class="px-5 text-red-900 font-semibold mb-4"> 
+          $1875.00
+        </h3>
+      </div>
     </div>
   </div>
 </div>
