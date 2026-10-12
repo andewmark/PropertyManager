@@ -1,7 +1,7 @@
 # Property Manager Web Application
 ###### Name of application to be updated
 > [!NOTE]
-> This web application is still currently under development
+> This web application is no longer being worked on
 
 ## Overview
 This Property Manager web application is designed to help landlords and property managers efficiently track and manage their real estate portfolio in one centralized system. 
